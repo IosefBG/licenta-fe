@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subscription, tap} from "rxjs";
+import {Subscription} from "rxjs";
 import {StorageService} from "../../../_services/storage.service";
 import {AuthService} from "../../../_services/auth.service";
 import {EventBusService} from "../../../_shared/event-bus.service";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -23,7 +22,6 @@ export class HeaderComponent implements OnInit {
     private storageService: StorageService,
     private authService: AuthService,
     private eventBusService: EventBusService,
-    private router: Router
   ) {
   }
 
@@ -46,14 +44,17 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout().subscribe(
-      () => {
+    this.authService.logout().subscribe({
+      next: res => {
+        console.log(res);
         this.storageService.logout();
-        this.router.navigate(['/login']);
+
+        window.location.reload();
       },
-      (error) => {
-        console.log("Error:", error);
+      error: err => {
+        console.log(err);
       }
-    );
+    });
   }
+
 }
