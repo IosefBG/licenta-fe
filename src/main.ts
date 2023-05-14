@@ -6,6 +6,10 @@ import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
+} else {
+  // Disable zone-related error stack frames in development mode
+  Error['stackTraceLimit'] = 0;
+  require('zone.js/plugins/zone-error');
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)

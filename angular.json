@@ -23,6 +23,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -58,16 +59,21 @@
               "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angular-14-refresh-token:build:development",
+            "hmr": false
+          },
           "configurations": {
             "production": {
               "browserTarget": "angular-14-refresh-token:build:production"
             },
             "development": {
-              "browserTarget": "angular-14-refresh-token:build:development"
+              "browserTarget": "angular-14-refresh-token:build:development",
+              "hmr": false
             }
           },
           "defaultConfiguration": "development"
@@ -90,6 +96,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []

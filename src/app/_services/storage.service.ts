@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
-import {AuthService} from "./auth.service";
+import { AuthService } from './auth.service';
 
 const USER_KEY = 'auth-user';
 const SECRET_KEY = 'my-secret-key';
@@ -49,19 +49,16 @@ export class StorageService {
   }
 
   private encrypt(data: string): string {
-    // Use any encryption algorithm of your choice
     const cipher = CryptoJS.AES.encrypt(data, SECRET_KEY);
     return cipher.toString();
   }
 
   private decrypt(data: string): string {
-    // Use the same encryption algorithm and secret key used to encrypt the data
     const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
   private generateChecksum(data: string): string {
-    // Use any checksum algorithm of your choice
     const hash = CryptoJS.SHA256(data);
     return hash.toString();
   }

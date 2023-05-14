@@ -1,51 +1,28 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
-import {environment} from "../../environments/environment";
-import {StorageService} from "./storage.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 const AUTH_API = environment.api + '/auth/';
-``
-const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'}),
-  credentials: true
-};
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private readonly storageService: StorageService) {
+  constructor(private http: HttpClient) {}
+
+  login(username: string, password: string) {
+    return this.http.post(AUTH_API + 'signin', { username, password });
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(
-      AUTH_API + 'signin',
-      {
-        username,
-        password,
-      },
-      httpOptions
-    );
-  }
-
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(
-      AUTH_API + 'signup',
-      {
-        username,
-        email,
-        password,
-      },
-      httpOptions
-    );
+  register(username: string, email: string, password: string) {
+    return this.http.post(AUTH_API + 'signup', { username, email, password });
   }
 
   logout() {
-    return this.http.post(AUTH_API + 'signout', {}, httpOptions);
+    return this.http.post(AUTH_API + 'signout', {});
   }
 
   refreshToken() {
-    return this.http.post(AUTH_API + 'refreshtoken', {}, httpOptions);
+    return this.http.post(AUTH_API + 'refreshtoken', {});
   }
 }

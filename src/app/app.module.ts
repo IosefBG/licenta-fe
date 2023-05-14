@@ -1,38 +1,42 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { HomeComponent } from './home/home.component';
-import { ProfileComponent } from './profile/profile.component';
-import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
-import { BoardUserComponent } from './board-user/board-user.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {BoardModeratorComponent} from './board-moderator/board-moderator.component';
 
-import { httpInterceptorProviders } from './_helpers/http.interceptor';
+import {httpInterceptorProviders} from './_helpers/http.interceptor';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ShellModule} from "./shell/shell.module";
+import {HomeModule} from "./home/home.module";
+import {LoginModule} from "./login/login.module";
+import {RegisterModule} from "./register/register.module";
+import {ProfileModule} from "./profile/profile.module";
+import {BoardAdminModule} from "./board/board-admin/board-admin.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    HomeComponent,
-    ProfileComponent,
-    BoardAdminComponent,
     BoardModeratorComponent,
-    BoardUserComponent
+    // BoardUserComponent,
   ],
   imports: [
+    HomeModule,
+    LoginModule,
+    RegisterModule,
+    ProfileModule,
+    BoardAdminModule,
     BrowserModule,
+    ShellModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

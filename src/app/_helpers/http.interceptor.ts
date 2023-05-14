@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpEvent,
+  HttpInterceptor,
+  HttpHandler,
+  HttpRequest,
+  HTTP_INTERCEPTORS,
+  HttpErrorResponse,
+  HttpResponse
+} from '@angular/common/http';
 
 import { StorageService } from '../_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
 import { EventBusService } from '../_shared/event-bus.service';
 import { EventData } from '../_shared/event.class';
@@ -27,15 +35,24 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       catchError((error) => {
-        if (
-          error instanceof HttpErrorResponse &&
-          !req.url.includes('auth/signin') &&
-          error.status === 401
-        ) {
+        if (error instanceof HttpErrorResponse && !req.url.includes('auth/signin') && error.status === 401) {
           return this.handle401Error(req, next);
         }
 
         return throwError(() => error);
+      }),
+      tap((event) => {
+        if (event instanceof HttpResponse && req.url.includes('auth/signin')) {
+          console.log(JSON.stringify(event)); // Log the response
+          const headers = event.headers;
+          if (headers.has('Set-Cookie')) {
+            const cookies: any = headers.getAll('Set-Cookie');
+            cookies.forEach((cookie:any) => {
+              console.log(cookie)
+              // Set the cookies using your preferred method
+            });
+          }
+        }
       })
     );
   }
