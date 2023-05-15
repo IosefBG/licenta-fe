@@ -1,5 +1,62 @@
 <div class="container">
-  <header class="jumbotron">
-    <p>{{ content }}</p>
-  </header>
+  <h1>Timesheet</h1>
+
+  <div class="navigation">
+    <button mat-icon-button (click)="changeWeek(-1)">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <h2>Week {{ getWeekNumber(selectedDate) }}</h2>
+    <button mat-icon-button (click)="changeWeek(1)">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="week-container">
+    <div class="week">
+      <div class="week-header">
+        Week {{ getWeekNumber(selectedDate) }}
+        <span class="week-period">({{ getWeekPeriod(selectedDate) }})</span>
+      </div>
+      <div class="days">
+        <div class="day-name"></div>
+        <div class="day-name" *ngFor="let day of getDisplayedDays()">
+          {{ day.date | date:'EEE' }}
+          <div class="day-number">{{ day.date | date:'d' }}</div>
+        </div>
+      </div>
+      <div class="day-entries">
+        <ng-container *ngFor="let day of getDisplayedDays()">
+          <div class="day-entry" (mouseenter)="showAddIcon[day.date] = true" (mouseleave)="showAddIcon[day.date] = false">
+            <div class="day-number">{{ day.date | date:'d' }}</div>
+            <div class="project-entries">
+              <div class="project-entry" *ngFor="let entry of day.timesheetEntry">
+                {{ entry.project }} - {{ entry.hours }}h {{ entry.minutes }}m
+              </div>
+              <div class="add-icon" *ngIf="showAddIcon[day.date]">
+                <button mat-icon-button (click)="openTimesheetModal(day)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timesheet Entry Modal -->
+  <div class="modal" *ngIf="selectedDay">
+    <h2>Add Timesheet Entry</h2>
+    <mat-form-field>
+      <input matInput placeholder="Project" [(ngModel)]="timesheetEntry.project">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Hours" [(ngModel)]="timesheetEntry.hours">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Minutes" [(ngModel)]="timesheetEntry.minutes">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addTimesheetEntry()">Add</button>
+    <button mat-raised-button color="warn" (click)="cancelModal()">Cancel</button>
+  </div>
 </div>

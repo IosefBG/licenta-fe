@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {environment} from "../../environments/environment";
+import { environment } from "../../environments/environment";
 
 const API_URL = environment.api + '/test/';
 
@@ -9,21 +9,27 @@ const API_URL = environment.api + '/test/';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) { }
+  private httpOptions:any = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    withCredentials: true,
+    responseType: 'text',
+  };
+
+  constructor(private http: HttpClient) {}
 
   getPublicContent(): Observable<any> {
-    return this.http.get(API_URL + 'all', { responseType: 'text' });
+    return this.http.get(API_URL + 'all', this.httpOptions);
   }
 
   getUserBoard(): Observable<any> {
-    return this.http.get(API_URL + 'user', { responseType: 'text' });
+    return this.http.get(API_URL + 'user', this.httpOptions);
   }
 
   getModeratorBoard(): Observable<any> {
-    return this.http.get(API_URL + 'mod', { responseType: 'text' });
+    return this.http.get(API_URL + 'mod', this.httpOptions);
   }
 
   getAdminBoard(): Observable<any> {
-    return this.http.get(API_URL + 'admin', { responseType: 'text' });
+    return this.http.get(API_URL + 'admin', this.httpOptions);
   }
 }
