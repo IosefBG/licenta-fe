@@ -14,6 +14,8 @@ import {RegisterModule} from "./register/register.module";
 import {ProfileModule} from "./profile/profile.module";
 import {BoardAdminModule} from "./board/board-admin/board-admin.module";
 import {BoardUserModule} from "./board/board-user/board-user.module";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TimesheetModalModule } from './board/modals/timesheet-modal/timesheet-modal.module';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import {BoardUserModule} from "./board/board-user/board-user.module";
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    NgbModule,
+    TimesheetModalModule,
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

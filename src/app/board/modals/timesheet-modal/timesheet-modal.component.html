@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Timesheet Entry</h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancelTimesheetModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <mat-form-field>
+    <input matInput placeholder="Project" [(ngModel)]="timesheetEntry.project">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" placeholder="Hours" [(ngModel)]="timesheetEntry.hours">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" placeholder="Minutes" [(ngModel)]="timesheetEntry.minutes">
+  </mat-form-field>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="addTimesheetEntry()">Save</button>
+  <button type="button" class="btn btn-secondary" (click)="cancelTimesheetModal()">Cancel</button>
+</div>

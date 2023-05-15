@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {Component} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TimesheetModalComponent} from '../modals/timesheet-modal/timesheet-modal.component';
 
 interface Day {
   date: Date;
-  timesheetEntry?: TimesheetEntry[];
+  timesheetEntry?: TimesheetEntry; // Updated type to TimesheetEntry
 }
 
 interface TimesheetEntry {
@@ -22,7 +23,7 @@ export class BoardUserComponent {
   calendarWeeks: Day[][] = [];
   selectedDay: Day | null = null;
   timesheetEntry: TimesheetEntry = { project: '', hours: null, minutes: null };
-  projects: string[] = ['Project 1', 'Project 2', 'Project 3']; // Add your project names here
+  projects: string[] = ['Project 1', 'Project 2', 'Project 3'];
   showAddIcon: { [date: string]: boolean } = {};
 
   constructor(private modalService: NgbModal) {
@@ -32,10 +33,10 @@ export class BoardUserComponent {
 
   generateCalendarWeeks() {
     const currentDate = new Date(this.selectedDate);
-    currentDate.setDate(1); // Set the date to the first day of the month
-    const startOfMonth = currentDate.getDay(); // Get the day of the week for the first day of the month
+    currentDate.setDate(1);
+    const startOfMonth = currentDate.getDay();
 
-    currentDate.setDate(currentDate.getDate() - startOfMonth); // Adjust the date to the start of the week
+    currentDate.setDate(currentDate.getDate() - startOfMonth);
 
     const weeks: Day[][] = [];
 
@@ -43,7 +44,7 @@ export class BoardUserComponent {
       const week: Day[] = [];
 
       for (let j = 0; j < 7; j++) {
-        const day: Day = { date: new Date(currentDate), timesheetEntry: [] };
+        const day: Day = { date: new Date(currentDate), timesheetEntry: undefined };
         week.push(day);
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -56,7 +57,7 @@ export class BoardUserComponent {
 
   getWeekNumber(date: Date) {
     const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    const weekOffset = (startOfMonth.getDay() + 6) % 7; // Adjusted week offset to start on Friday (6)
+    const weekOffset = (startOfMonth.getDay() + 6) % 7;
     const currentDay = date.getDate();
 
     let weekNumber = Math.ceil((currentDay - 1 + weekOffset) / 7);
@@ -89,8 +90,9 @@ export class BoardUserComponent {
   openTimesheetModal(day: Day) {
     this.selectedDay = day;
     this.timesheetEntry = { project: '', hours: null, minutes: null };
-    // Open the timesheet entry modal using ng-bootstrap
-    const modalRef = this.modalService.open(this.timesheetModal);
+
+    // Open the timesheet entry modal using ng-bootstrap with the defined options
+    const modalRef = this.modalService.open(TimesheetModalComponent, {backdropClass: 'custom-modal-backdrop'});
     modalRef.result.then((result) => {
       if (result === 'save') {
         this.addTimesheetEntry();
@@ -103,14 +105,12 @@ export class BoardUserComponent {
   }
 
   addTimesheetEntry() {
-    if (this.selectedDay && this.timesheetEntry.project && this.timesheetEntry.hours) {
-      const timesheetEntry: TimesheetEntry = {
+    if (this.selectedDay && this.selectedDay.timesheetEntry && this.timesheetEntry.project && this.timesheetEntry.hours) {
+      this.selectedDay.timesheetEntry = {
         project: this.timesheetEntry.project,
         hours: this.timesheetEntry.hours,
         minutes: this.timesheetEntry.minutes || null
-      };
-
-      this.selectedDay.timesheetEntry.push(timesheetEntry);
+      }; // Assign the timesheet entry to the day
       this.cancelModal();
     }
   }
@@ -129,3 +129,4 @@ export class BoardUserComponent {
     this.generateCalendarWeeks();
   }
 }
+

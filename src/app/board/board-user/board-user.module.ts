@@ -9,10 +9,10 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule, MatOptionModule} from "@angular/material/core";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSelectModule} from "@angular/material/select";
+import {TimesheetModalModule} from "../modals/timesheet-modal/timesheet-modal.module";
 
 
 @NgModule({
@@ -23,6 +23,7 @@ import {MatSelectModule} from "@angular/material/select";
     CommonModule,
     BoardUserRoutingModule,
     // BrowserAnimationsModule,
+    TimesheetModalModule,
     FormsModule,
     HttpClientModule,
     MatDatepickerModule,
