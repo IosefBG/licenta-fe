@@ -4,7 +4,7 @@ import {TimesheetModalComponent} from '../modals/timesheet-modal/timesheet-modal
 
 interface Day {
   date: Date;
-  timesheetEntry?: TimesheetEntry; // Updated type to TimesheetEntry
+  timesheetEntry?: TimesheetEntry;
 }
 
 interface TimesheetEntry {
@@ -16,13 +16,13 @@ interface TimesheetEntry {
 @Component({
   selector: 'app-board-user',
   templateUrl: './board-user.component.html',
-  styleUrls: ['./board-user.component.css']
+  styleUrls: ['./board-user.component.css'],
 })
 export class BoardUserComponent {
   selectedDate: Date;
   calendarWeeks: Day[][] = [];
   selectedDay: Day | null = null;
-  timesheetEntry: TimesheetEntry = { project: '', hours: null, minutes: null };
+  timesheetEntry: TimesheetEntry = {project: '', hours: null, minutes: null};
   projects: string[] = ['Project 1', 'Project 2', 'Project 3'];
   showAddIcon: { [date: string]: boolean } = {};
 
@@ -35,8 +35,9 @@ export class BoardUserComponent {
     const currentDate = new Date(this.selectedDate);
     currentDate.setDate(1);
     const startOfMonth = currentDate.getDay();
+    const startOfWeek = (startOfMonth + 6) % 7; // Adjust to start the week from Monday
 
-    currentDate.setDate(currentDate.getDate() - startOfMonth);
+    currentDate.setDate(currentDate.getDate() - startOfWeek);
 
     const weeks: Day[][] = [];
 
@@ -44,7 +45,7 @@ export class BoardUserComponent {
       const week: Day[] = [];
 
       for (let j = 0; j < 7; j++) {
-        const day: Day = { date: new Date(currentDate), timesheetEntry: undefined };
+        const day: Day = {date: new Date(currentDate), timesheetEntry: undefined};
         week.push(day);
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -56,31 +57,35 @@ export class BoardUserComponent {
   }
 
   getWeekNumber(date: Date) {
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    const weekOffset = (startOfMonth.getDay() + 6) % 7;
-    const currentDay = date.getDate();
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - date.getDay() + 1);
 
-    let weekNumber = Math.ceil((currentDay - 1 + weekOffset) / 7);
-    if (weekNumber === 0) {
-      const prevMonthLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-      weekNumber = Math.ceil((prevMonthLastDay - startOfMonth.getDay() + 1 + weekOffset) / 7);
-    }
-    return weekNumber;
+    const weekNumber = Math.ceil(startOfWeek.getDate() / 7);
+    const monthName = startOfWeek.toLocaleString('default', {month: 'long'});
+
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const monthPeriod = `${startOfMonth.getDate()} - ${endOfMonth.getDate()}`;
+
+    return `${monthName} ${monthPeriod}\n Week ${weekNumber}`;
   }
 
   getWeekPeriod(date: Date) {
     const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - date.getDay());
+    startOfWeek.setDate(date.getDate() - date.getDay() + 1);
 
     const endOfWeek = new Date(date);
-    endOfWeek.setDate(date.getDate() - date.getDay() + 6);
+    endOfWeek.setDate(date.getDate() - date.getDay() + 7);
 
     return `${startOfWeek.getDate()} - ${endOfWeek.getDate()}`;
   }
 
   getDisplayedDays() {
-    const currentWeek = this.calendarWeeks.find((week) => this.getWeekNumber(week[0].date) === this.getWeekNumber(this.selectedDate));
-    return currentWeek ? currentWeek : [];
+    const currentWeek = this.calendarWeeks.find(
+      (week) => this.getWeekNumber(week[0].date) === this.getWeekNumber(this.selectedDate)
+    );
+    return currentWeek ? currentWeek.slice(0, 7) : [];
   }
 
   openModal(day: Day) {
@@ -89,28 +94,34 @@ export class BoardUserComponent {
 
   openTimesheetModal(day: Day) {
     this.selectedDay = day;
-    this.timesheetEntry = { project: '', hours: null, minutes: null };
-
-    // Open the timesheet entry modal using ng-bootstrap with the defined options
+    this.timesheetEntry = {project: '', hours: null, minutes: null};
     const modalRef = this.modalService.open(TimesheetModalComponent, {backdropClass: 'custom-modal-backdrop'});
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        this.addTimesheetEntry();
-      } else {
+    modalRef.result.then(
+      (result) => {
+        if (result === 'save') {
+          this.addTimesheetEntry();
+        } else {
+          this.cancelModal();
+        }
+      },
+      () => {
         this.cancelModal();
       }
-    }, () => {
-      this.cancelModal();
-    });
+    );
   }
 
   addTimesheetEntry() {
-    if (this.selectedDay && this.selectedDay.timesheetEntry && this.timesheetEntry.project && this.timesheetEntry.hours) {
+    if (
+      this.selectedDay &&
+      this.selectedDay.timesheetEntry &&
+      this.timesheetEntry.project &&
+      this.timesheetEntry.hours
+    ) {
       this.selectedDay.timesheetEntry = {
         project: this.timesheetEntry.project,
         hours: this.timesheetEntry.hours,
-        minutes: this.timesheetEntry.minutes || null
-      }; // Assign the timesheet entry to the day
+        minutes: this.timesheetEntry.minutes || null,
+      };
       this.cancelModal();
     }
   }
@@ -129,4 +140,3 @@ export class BoardUserComponent {
     this.generateCalendarWeeks();
   }
 }
-
