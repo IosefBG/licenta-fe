@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../_services/auth.service';
+import {ApiService} from "../shell/api.service";
 
 @Component({
   selector: 'app-register',
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   isSignUpFailed = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService) { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
   }
@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     const { username, email, password } = this.form;
 
-    this.authService.register(username, email, password).subscribe({
+    this.apiService.register(username, email, password).subscribe({
       next: data => {
         console.log(data);
         this.isSuccessful = true;

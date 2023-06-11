@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../_services/user.service';
+import {ApiService} from "../../shell/api.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-board-admin',
@@ -9,25 +11,39 @@ import { UserService } from '../../_services/user.service';
 export class BoardAdminComponent implements OnInit {
   content?: string;
 
-  constructor(private userService: UserService) { }
+  myForm: FormGroup = new FormGroup({});
+  managers: any[] = [];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource()
+  displayedColumns: string[] = ['id', 'username', 'email'];
+
+  dataSource2: any;
+  displayedColumns2: string[] = ['projectId', 'projectName','managerId','managerUsername'];
+  constructor(private apiService: ApiService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.userService.getAdminBoard().subscribe({
-      next: (data: string | undefined) => {
-        this.content = data;
-      },
-      error: (err: { error: string; status: any; statusText: any; }) => {
-        if (err.error) {
-          try {
-            const res = JSON.parse(err.error);
-            this.content = res.message;
-          } catch {
-            this.content = `Error with status: ${err.status} - ${err.statusText}`;
-          }
-        } else {
-          this.content = `Error with status: ${err.status}`;
-        }
-      }
+    this.apiService.getManagers().subscribe((data:any) => {
+      this.managers = data;
+      this.dataSource = new MatTableDataSource(data);
+    });
+    this.apiService.getManagersProjects().subscribe((data:any) => {
+      console.log(data);
+      this.dataSource2 = new MatTableDataSource(data);
+    });
+    this.myForm = this.formBuilder.group({
+      projectName: ['', Validators.required],
+      managerName: ['', Validators.required]
     });
   }
+
+  submitForm() {
+    console.log(this.myForm.value);
+    if (this.myForm) {
+      this.apiService.addProject(this.myForm.value.projectName, this.myForm.value.managerName)
+        .subscribe((res:any) => {
+          if(res.status==200)
+            console.log("succes")
+        });
+    }
+  }
+
 }

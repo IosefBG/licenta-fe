@@ -14,8 +14,11 @@ import {RegisterModule} from "./register/register.module";
 import {ProfileModule} from "./profile/profile.module";
 import {BoardAdminModule} from "./board/board-admin/board-admin.module";
 import {BoardUserModule} from "./board/board-user/board-user.module";
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TimesheetModalModule } from './board/modals/timesheet-modal/timesheet-modal.module';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {TimesheetModalModule} from './board/modals/timesheet-modal/timesheet-modal.module';
+import {BoardManagerModule} from "./board/board-manager/board-manager.module";
+import {MatTableModule} from "@angular/material/table";
+import {DataTableModule} from "./shared/data-table/data-table.module";
 
 @NgModule({
   declarations: [
@@ -28,6 +31,7 @@ import { TimesheetModalModule } from './board/modals/timesheet-modal/timesheet-m
     ProfileModule,
     BoardAdminModule,
     BoardUserModule,
+    BoardManagerModule,
     BrowserModule,
     ShellModule,
     AppRoutingModule,
@@ -36,6 +40,8 @@ import { TimesheetModalModule } from './board/modals/timesheet-modal/timesheet-m
     BrowserAnimationsModule,
     NgbModule,
     TimesheetModalModule,
+    MatTableModule,
+    DataTableModule,
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

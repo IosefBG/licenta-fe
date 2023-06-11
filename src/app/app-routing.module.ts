@@ -17,9 +17,10 @@ const routes: Routes = [
     loadChildren: () => import('./board/board-admin/board-admin.module').then(m => m.BoardAdminModule)
   },
   {
-    path: 'user',
+    path: 'timesheet',
     loadChildren: () => import('./board/board-user/board-user.module').then(m => m.BoardUserModule)
   },
+  { path: 'manage', loadChildren: () => import('./board/board-manager/board-manager.module').then(m => m.BoardManagerModule) },
 ]
 
 @NgModule({

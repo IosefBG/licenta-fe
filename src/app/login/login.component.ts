@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../_services/auth.service';
 import {StorageService} from '../_services/storage.service';
+import {ApiService} from "../shell/api.service";
 
 @Component({
   selector: 'app-login',
@@ -17,8 +17,9 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   roles: string[] = [];
 
-  constructor(private authService: AuthService, private storageService: StorageService) {
+  constructor(private apiService: ApiService, private storageService: StorageService) {
   }
+
 
   ngOnInit(): void {
     if (this.storageService.isLoggedIn()) {
@@ -31,9 +32,8 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     const {username, password} = this.form;
 
-    this.authService.login(username, password).subscribe({
+    this.apiService.login(username, password).subscribe({
       next: data => {
-        console.dir(data);
         this.storageService.saveUser(data);
 
         this.isLoginFailed = false;

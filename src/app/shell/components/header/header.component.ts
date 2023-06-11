@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
+import {throwError} from "rxjs";
 import {StorageService} from "../../../_services/storage.service";
-import {AuthService} from "../../../_services/auth.service";
-import {EventBusService} from "../../../_shared/event-bus.service";
+import {catchError} from "rxjs/operators";
+import {ApiService} from "../../api.service";
 
 @Component({
   selector: 'app-header',
@@ -13,15 +13,12 @@ export class HeaderComponent implements OnInit {
   private roles: string[] = [];
   isLoggedIn = false;
   showAdminBoard = false;
-  showModeratorBoard = false;
+  showManagerBoard = false;
   username?: string;
-
-  eventBusSub?: Subscription;
 
   constructor(
     private storageService: StorageService,
-    private authService: AuthService,
-    private eventBusService: EventBusService,
+    private apiService: ApiService,
   ) {
   }
 
@@ -33,27 +30,20 @@ export class HeaderComponent implements OnInit {
       this.roles = user.roles;
 
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
+      this.showManagerBoard = this.roles.includes('ROLE_MANAGER');
 
       this.username = user.username;
     }
 
-    this.eventBusSub = this.eventBusService.on('logout', () => {
-      this.logout();
-    });
   }
 
   logout(): void {
-    this.authService.logout().subscribe({
-      next: res => {
-        console.log(res);
-        this.storageService.logout();
-
-        window.location.reload();
-      },
-      error: err => {
-        console.log(err);
-      }
+    this.apiService.logout().pipe(
+      catchError((error: any) => {
+        return throwError(() => error);
+      })
+    ).subscribe(() => {
+      this.storageService.logout();
     });
   }
 

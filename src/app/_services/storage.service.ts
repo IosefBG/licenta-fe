@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
-import { AuthService } from './auth.service';
 
 const USER_KEY = 'auth-user';
 const SECRET_KEY = 'my-secret-key';
@@ -41,11 +40,7 @@ export class StorageService {
 
   public isLoggedIn(): boolean {
     const user = window.sessionStorage.getItem(USER_KEY);
-    if (user) {
-      return true;
-    }
-
-    return false;
+    return !!user;
   }
 
   private encrypt(data: string): string {

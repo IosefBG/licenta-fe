@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
-
 import { StorageService } from '../_services/storage.service';
-import { AuthService } from '../_services/auth.service';
-
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import {ApiService} from "../shell/api.service";
 
-import { EventBusService } from '../_shared/event-bus.service';
-import { EventData } from '../_shared/event.class';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
@@ -16,8 +12,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(
     private storageService: StorageService,
-    private authService: AuthService,
-    private eventBusService: EventBusService
+    private apiservice: ApiService,
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -26,7 +21,6 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       catchError((error) => {
         if (
           error instanceof HttpErrorResponse &&
-          !req.url.includes('auth/signin') &&
           error.status === 401
         ) {
           return this.handle401Error(req, next);
@@ -42,7 +36,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       this.isRefreshing = true;
 
       if (this.storageService.isLoggedIn()) {
-        return this.authService.refreshToken().pipe(
+        return this.apiservice.refreshToken().pipe(
           switchMap(() => {
             this.isRefreshing = false;
 
@@ -50,10 +44,6 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           }),
           catchError((error) => {
             this.isRefreshing = false;
-
-            if (error.status == '403') {
-              this.eventBusService.emit(new EventData('logout', null));
-            }
 
             return throwError(() => error);
           })

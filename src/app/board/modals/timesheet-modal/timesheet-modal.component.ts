@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,6 +8,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class TimesheetModalComponent implements OnInit {
   @ViewChild('timesheetModal') timesheetModal!: TemplateRef<any>;
+  @Input() inputData:any;
 
   selectedDay: any;
   timesheetEntry: TimesheetEntry = {hours: null, minutes: null, project: ''};
@@ -16,6 +17,7 @@ export class TimesheetModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.inputData)
   }
 
   cancelTimesheetModal() {

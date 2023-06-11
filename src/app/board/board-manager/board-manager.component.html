@@ -1,0 +1,9 @@
+<div class="container">
+  <header class="jumbotron">
+    <p>{{ content }}</p>
+  </header>
+  <mat-form-field>
+    <input [formControl]="filterControl" matInput placeholder="Filter">
+  </mat-form-field>
+  <app-data-table [columns]="displayedColumns" [data]="dataSource"></app-data-table>
+</div>
