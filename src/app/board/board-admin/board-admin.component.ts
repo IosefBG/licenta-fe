@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ApiService} from "../../shell/api.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
@@ -18,7 +18,8 @@ export interface Role {
 @Component({
   selector: 'app-board-admin',
   templateUrl: './board-admin.component.html',
-  styleUrls: ['./board-admin.component.css']
+  styleUrls: ['./board-admin.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 
 export class BoardAdminComponent implements OnInit {
@@ -48,7 +49,6 @@ export class BoardAdminComponent implements OnInit {
     'managerId',
     'managerUsername',
     'managerEmail',
-    'managerRoles'
   ];
   dataSource4 :MatTableDataSource<any> = new MatTableDataSource()
 

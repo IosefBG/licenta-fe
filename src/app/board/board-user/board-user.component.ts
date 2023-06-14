@@ -35,9 +35,9 @@ export class BoardUserComponent {
     const currentDate = new Date(this.selectedDate);
     currentDate.setDate(1);
     const startOfMonth = currentDate.getDay();
-    const startOfWeek = (startOfMonth + 6) % 7; // Adjust to start the week from Monday
+    const startOfWeek = startOfMonth === 0 ? 6 : startOfMonth - 1; // Adjust to start the week from Monday
 
-    currentDate.setDate(currentDate.getDate() - startOfMonth + startOfWeek);
+    currentDate.setDate(currentDate.getDate() - startOfWeek);
 
     const weeks: Day[][] = [];
 
@@ -52,7 +52,6 @@ export class BoardUserComponent {
 
       weeks.push(week);
 
-      // If the current week contains the last day of the selected month, exit the loop
       if (currentDate.getMonth() !== this.selectedDate.getMonth()) {
         break;
       }
@@ -60,7 +59,6 @@ export class BoardUserComponent {
 
     this.calendarWeeks = weeks;
   }
-
 
 
 
@@ -104,7 +102,8 @@ export class BoardUserComponent {
     this.selectedDay = day;
     this.timesheetEntry = {project: '', hours: null, minutes: null};
     const modalRef = this.modalService.open(TimesheetModalComponent, {backdropClass: 'custom-modal-backdrop'});
-    modalRef.componentInstance.inputData = day;
+    modalRef.componentInstance.selectedDay = day;
+    modalRef.componentInstance.selectedWeek = this.getWeekPeriod(this.selectedDate);
     modalRef.result.then(
       (result) => {
         if (result === 'save') {

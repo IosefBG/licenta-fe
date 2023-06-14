@@ -1,18 +1,23 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from "../../environments/environment";
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {StorageService} from "../_services/storage.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private http: HttpClient) {}
+  private apiUrl: string;
+
+  constructor(private http: HttpClient, private readonly storageService: StorageService) {
+    this.apiUrl = environment.api;
+  }
 
   private getHeaders(): HttpHeaders {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
     });
     return headers;
   }
@@ -38,10 +43,11 @@ export class ApiService {
 
   private makeRequest(
     method: string,
-    url: string,
+    path: string,
     params: HttpParams | null = null,
     body: any = null
   ): Observable<any> {
+    const url = `${this.apiUrl}${path}`;
     const requestOptions = this.buildRequestOptions(params);
     let response: Observable<any>;
 
@@ -66,97 +72,114 @@ export class ApiService {
   }
 
   login(username: string, password: string): Observable<any> {
-    const url = environment.api + 'auth/signin';
     const body = { username, password };
-    return this.makeRequest('POST', url, null, body);
+    return this.makeRequest('POST', 'user/signin', null, body);
   }
 
   register(username: string, email: string, password: string): Observable<any> {
-    const url = environment.api + 'auth/signup';
     const body = { username, email, password };
-    return this.makeRequest('POST', url, null, body);
+    return this.makeRequest('POST', 'user/signup', null, body);
   }
 
   logout(): Observable<any> {
-    const url = environment.api + 'auth/signout';
-    return this.makeRequest('POST', url);
+    return this.makeRequest('POST', 'user/signout');
   }
 
   refreshToken(): Observable<any> {
-    const url = environment.api + 'auth/refreshtoken';
-    return this.makeRequest('POST', url);
+    return this.makeRequest('POST', 'user/refreshtoken');
   }
 
   getUsers(): Observable<any> {
-    const url = environment.api + 'manager/users';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'manager/users');
   }
 
   addProject(projectname: string, manager: string): Observable<any> {
-    const url = environment.api + 'admin/addProject';
     const params = new HttpParams()
       .set('projectName', projectname)
       .set('managerId', manager);
-    return this.makeRequest('PUT', url, params);
+    return this.makeRequest('PUT', 'admin/addProject', params);
   }
 
   getManagers(): Observable<any> {
-    const url = environment.api + 'admin/getManagers';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/getManagers');
   }
 
   getManagersProjects(): Observable<any> {
-    const url = environment.api + 'admin/getManagersWithProjects';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/getManagersWithProjects');
   }
 
   addRoles(userId: number, roleId: number): Observable<any> {
-    const url = environment.api + 'admin/addRoleForUserId';
     const params = new HttpParams()
       .set('userId', userId.toString())
       .set('roleId', roleId.toString());
-    return this.makeRequest('PUT', url, params);
+    return this.makeRequest('PUT', 'admin/addRoleForUserId', params);
   }
 
   getUsersWithRoles(): Observable<any> {
-    const url = environment.api + 'admin/getUsersWithRoles';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/getUsersWithRoles');
   }
 
   removeRole(userId: number, roleId: number): Observable<any> {
-    const url = environment.api + 'admin/removeRoleForUserId';
     const params = new HttpParams()
       .set('userId', userId.toString())
       .set('roleId', roleId.toString());
-    return this.makeRequest('DELETE', url, params);
+    return this.makeRequest('DELETE', 'admin/removeRoleForUserId', params);
   }
 
   getUsersWithMissingRoles(): Observable<any> {
-    const url = environment.api + 'admin/getUsersWithMissingRoles';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/getUsersWithMissingRoles');
   }
 
   getProjects(): Observable<any> {
-    const url = environment.api + 'admin/getProjects';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/getProjects');
   }
 
   getUsersWithUserRoles(): Observable<any> {
-    const url = environment.api + 'admin/usersWithUserRole';
-    return this.makeRequest('GET', url);
+    return this.makeRequest('GET', 'admin/usersWithUserRole');
   }
 
   saveUserProject(payload: { userId: any; projectId: any }): Observable<any> {
-    const url = environment.api + 'admin/addUserProject';
     const body = {
       userId: payload.userId,
       projectId: payload.projectId,
     };
-    return this.makeRequest('PUT', url, null, body);
+    return this.makeRequest('PUT', 'admin/addUserProject', null, body);
   }
 
   getUsersWithProjects(): Observable<any> {
-    const url = environment.api + 'admin/getUsersProjects';
-    return this.makeRequest('GET', url, null,null);
+    return this.makeRequest('GET', 'admin/getUsersProjects');
   }
+
+  getProjectsByUserId(): Observable<any> {
+    let param = new HttpParams().set('userId', this.storageService.getUser().id);
+    return this.makeRequest('GET', 'user/getProjectsByUserId', param);
+  }
+
+  addTimesheetEntry(value: any, selectedWeek: any) {
+    console.log(value);
+    const [startWeekDay, endWeekDay] = selectedWeek.split(" - ").map(Number);
+    const params = new HttpParams()
+      .set('userId', this.storageService.getUser().id)
+      .set('projectId', value.project)
+      .set('hours', value.hours)
+      .set('weekStartDay', startWeekDay)
+      .set('weekEndDay', endWeekDay);
+
+    if (value.selectedDate) {
+      const selectedDateWithoutTimezone = new Date(value.selectedDate).toISOString().split('T')[0];
+      params.set('selectedDate', selectedDateWithoutTimezone);
+    }
+
+    if (value.periodCheckboxChecked) {
+      const fromDate = new Date(value.fromDate);
+      const toDate = new Date(value.toDate);
+      const fromDateFormatted = fromDate.toISOString().split('T')[0];
+      const toDateFormatted = toDate.toISOString().split('T')[0];
+      params.set('fromDate', fromDateFormatted).set('toDate', toDateFormatted);
+    }
+
+    return this.makeRequest('PUT', 'user/addTimesheet', params);
+  }
+
+
 }

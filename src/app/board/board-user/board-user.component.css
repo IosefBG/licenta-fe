@@ -36,6 +36,8 @@
 }
 
 .week {
+  border-radius: 5px;
+  color:black;
   flex: 1;
   background-color: #f5f5f5;
   margin: 5px;
@@ -70,7 +72,7 @@
   bottom: 5px;
   left: 5px;
   font-size: 12px;
-  color: #888;
+  color: black;
 }
 
 ::ng-deep .modal-backdrop {

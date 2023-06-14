@@ -1,3 +1,24 @@
-table{
-  width: 100%;
+th,
+td {
+  padding: 10px;
+  border: 1px solid #555;
+  color: white; /* Set the text color to white */
+  text-align: center; /* Center align the text */
+}
+
+th.mat-header-cell {
+  text-align: center !important;
+}
+
+.mat-table {
+  margin: 0 auto; /* Center the table horizontally */
+}
+
+li {
+  margin-bottom: 5px; /* Adjust the margin between list items */
+  list-style-type: none; /* Add a bullet point to each list item */
+}
+
+mat-form-field{
+  margin-top:15px;
 }

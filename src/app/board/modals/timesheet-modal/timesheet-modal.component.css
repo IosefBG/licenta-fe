@@ -1,8 +1,33 @@
-/* Add your custom styling here */
-.container {
-  /* Your container styles */
+.row {
+  margin-bottom: 10px;
 }
 
-.modal {
-  /* Your modal styles */
+label {
+  display: block;
+  font-weight: bold;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-checkbox {
+  margin-top: 10px;
+}
+
+.mat-datepicker-input {
+  width: 100%;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 1200 !important;
+}
+
+
+.modal-body .mat-calendar-table{
+  background-color:white;
+}
+
+.modal-body{
+  color:black
 }

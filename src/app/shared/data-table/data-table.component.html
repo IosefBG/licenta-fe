@@ -1,8 +1,47 @@
-<ng-container *ngIf="tableType !== 'user_roles'">
+<ng-container *ngIf="tableType !== 'user_roles' && tableType !=='user_projects'">
   <table mat-table [dataSource]=" data" class="mat-elevation-z8">
     <ng-container *ngFor="let column of columns" [matColumnDef]="column">
       <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
       <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  </table>
+</ng-container>
+<ng-container *ngIf="tableType === 'user_projects'">
+  <table mat-table [dataSource]=" data" class="mat-elevation-z8">
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column">
+      <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="column === 'userProjectId'">
+          {{ element.userProjectId }}
+        </ng-container>
+        <ng-container *ngIf="column === 'userId'">
+          {{ element.user.id }}
+        </ng-container>
+        <ng-container *ngIf="column === 'username'">
+          {{ element.user.username }}
+        </ng-container>
+        <ng-container *ngIf="column === 'email'">
+          {{ element.user.email }}
+        </ng-container>
+        <ng-container *ngIf="column === 'projectId'">
+          {{ element.project.id }}
+        </ng-container>
+        <ng-container *ngIf="column === 'projectName'">
+          {{ element.project.projectName }}
+        </ng-container>
+        <ng-container *ngIf="column === 'managerId'">
+          {{ element.project.manager.id }}
+        </ng-container>
+        <ng-container *ngIf="column === 'managerUsername'">
+          {{ element.project.manager.username }}
+        </ng-container>
+        <ng-container *ngIf="column === 'managerEmail'">
+          {{ element.project.manager.email }}
+        </ng-container>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
@@ -33,8 +72,8 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let user">
-        <mat-form-field>
-          <mat-select [value]="getSelectedRoleId(user)" (selectionChange)="onRoleSelectionChange($event, user)">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-select [value]="getSelectedRoleId(user)" (selectionChange)="onRoleSelectionChange($event, user)" placeholder="Sterge rol">
             <mat-option [value]="role.id" *ngFor="let role of user.roles">
               {{ role.name }}
             </mat-option>

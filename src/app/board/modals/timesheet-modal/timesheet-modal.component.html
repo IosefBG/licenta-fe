@@ -1,21 +1,43 @@
-<div class="modal-header">
-  <h4 class="modal-title">Add Timesheet Entry</h4>
-  <button type="button" class="close" aria-label="Close" (click)="cancelTimesheetModal()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <mat-form-field>
-    <input matInput placeholder="Project" [(ngModel)]="timesheetEntry.project">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput type="number" placeholder="Hours" [(ngModel)]="timesheetEntry.hours">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput type="number" placeholder="Minutes" [(ngModel)]="timesheetEntry.minutes">
-  </mat-form-field>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-primary" (click)="addTimesheetEntry()">Save</button>
-  <button type="button" class="btn btn-secondary" (click)="cancelTimesheetModal()">Cancel</button>
-</div>
+<form [formGroup]="timesheetForm" (ngSubmit)="addTimesheetEntry()">
+  <div class="modal-header">
+    <h4 class="modal-title">Add Timesheet Entry</h4>
+    <button type="button" class="close" aria-label="Close" (click)="cancelTimesheetModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <mat-form-field>
+      <mat-label>Project</mat-label>
+      <mat-select formControlName="project">
+        <mat-option *ngFor="let project of projects" [value]="project.projectId">{{ project.projectName }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Hours</mat-label>
+      <input matInput type="number" placeholder="Hours" formControlName="hours">
+    </mat-form-field>
+    <mat-form-field *ngIf="!timesheetForm.get('periodCheckboxChecked')?.value">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="selectedDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field *ngIf="timesheetForm.get('periodCheckboxChecked')?.value">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate">
+      <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromDatePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field *ngIf="timesheetForm.get('periodCheckboxChecked')?.value">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toDatePicker" formControlName="toDate">
+      <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #toDatePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-checkbox formControlName="periodCheckboxChecked">Period</mat-checkbox>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" [disabled]="timesheetForm.invalid">Submit</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelTimesheetModal()">Cancel</button>
+  </div>
+</form>
