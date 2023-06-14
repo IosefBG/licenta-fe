@@ -26,7 +26,6 @@ export class RegisterComponent implements OnInit {
 
     this.apiService.register(username, email, password).subscribe({
       next: data => {
-        console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
       },

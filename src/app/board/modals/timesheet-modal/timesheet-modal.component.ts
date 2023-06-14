@@ -17,7 +17,7 @@ export class TimesheetModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.inputData)
+    // console.log(this.inputData)
   }
 
   cancelTimesheetModal() {

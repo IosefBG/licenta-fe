@@ -1,11 +1,14 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HeaderComponent} from "./header.component";
+import {RouterLinkActive, RouterLinkWithHref} from "@angular/router";
 
 @NgModule({
   declarations: [HeaderComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterLinkActive,
+    RouterLinkWithHref
   ],
   exports: [HeaderComponent]
 })

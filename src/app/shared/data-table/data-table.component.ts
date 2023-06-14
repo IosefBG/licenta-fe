@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
+import {ApiService} from "../../shell/api.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-data-table',
@@ -9,10 +11,40 @@ import {MatTableDataSource} from "@angular/material/table";
 export class DataTableComponent implements OnInit {
   @Input() data: MatTableDataSource<any> = new MatTableDataSource()
   @Input() columns: string[] = [];
-  constructor() { }
+  @Input() tableType: string | undefined;
+  form: FormGroup = new FormGroup({})
 
-  ngOnInit(): void {
-
+  constructor(private readonly apiService: ApiService, private formBuilder: FormBuilder) {
   }
 
+  ngOnInit(): void {
+    this.form = this.formBuilder.group({});
+    if (this.tableType === 'user_roles') {
+      this.columns = [...this.columns, 'roles', 'actions']
+    }
+  }
+
+  removeRole(user: any) {
+    const roleId = user.selectedRoleId;
+    if (roleId) {
+      const roleIndex = user.roles.findIndex((role: any) => role.id === roleId);
+      this.apiService.removeRole(user.id, roleId).subscribe((res: any) => {
+        if (roleIndex !== -1) {
+          this.data.data.splice(roleIndex, 1); // Remove the role from the data array
+          this.data = new MatTableDataSource(this.data.data); // Recreate the MatTableDataSource with the updated data array
+          user.roles.splice(roleIndex, 1); // Remove the role from the user's roles array
+        }
+      });
+    }
+  }
+
+
+  onRoleSelectionChange(event: any, user: any) {
+    user.selectedRoleId = event.value;
+  }
+
+
+  getSelectedRoleId(user:any) {
+    return user.selectedRoleId;
+  }
 }

@@ -1,3 +1,29 @@
+body{
+  margin:25px;
+}
 table{
   width:100%;
+}
+
+.form-container {
+  align-items: center;
+  margin: 20px;
+}
+
+.form-field {
+  width: 300px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.outline {
+  border: 1px solid #ccc;
+}
+
+.submit-button {
+  margin-top: 20px;
+}
+
+.content{
+  margin: 40px;
 }

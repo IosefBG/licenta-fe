@@ -1,9 +1,10 @@
-<form [formGroup]="myForm" (ngSubmit)="submitForm()">
-  <mat-form-field>
+<form [formGroup]="myForm" (ngSubmit)="submitForm()" class="form-container">
+  <h2>Atribuie un proiect unui manager</h2>
+  <mat-form-field class="form-field">
     <input matInput placeholder="Project Name" formControlName="projectName" required>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="form-field outline">
     <mat-label>Manager Name</mat-label>
     <mat-select placeholder="Select Manager" formControlName="managerName" required>
       <mat-option *ngFor="let manager of managers" [value]="manager.id">
@@ -12,10 +13,62 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit">Submit</button>
+  <button mat-raised-button color="primary" type="submit" class="submit-button">Submit</button>
 </form>
-<h2>Managers</h2>
-<app-data-table [data]="dataSource" [columns]="displayedColumns"></app-data-table>
-<h2>Projects</h2>
-<app-data-table [data]="dataSource2" [columns]="displayedColumns2"></app-data-table>
+<form [formGroup]="userRole" (ngSubmit)="addUserRole()" class="form-container">
+  <h2>Role manager</h2>
+  <mat-form-field class="form-field outline">
+    <mat-label>User name</mat-label>
+    <mat-select placeholder="Select Manager" formControlName="userId" required
+                (selectionChange)="onUserSelectionChange($event.value)">
+      <mat-option *ngFor="let user of usersWithMissingRoles" [value]="user.id">
+        {{ user.username }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
+  <mat-form-field class="form-field outline">
+    <mat-label>Manager Name</mat-label>
+    <mat-select placeholder="Select Manager" formControlName="userRoleId" required>
+      <mat-option *ngFor="let role of selectedUser?.missingRoles" [value]="role.id">
+        {{ role.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" class="submit-button">Submit</button>
+</form>
+
+<form [formGroup]="userProjectForm" (ngSubmit)="onUserProjectFormSubmit()">
+  <h2>Assign project to user</h2>
+  <mat-form-field>
+    <mat-label>User</mat-label>
+    <mat-select formControlName="selectedUser">
+      <mat-option *ngFor="let user of usersWithUserRoles" [value]="user">
+        {{ user.username }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Project</mat-label>
+    <mat-select formControlName="selectedProject">
+      <mat-option *ngFor="let project of projects" [value]="project">
+        {{ project.projectName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Save</button>
+</form>
+
+
+<div class="content">
+  <h2>Managers</h2>
+  <app-data-table [data]="dataSource" [columns]="displayedColumns"></app-data-table>
+  <h2>Projects</h2>
+  <app-data-table [data]="dataSource2" [columns]="displayedColumns2"></app-data-table>
+  <h2>User Roles</h2>
+  <app-data-table [data]="usersWithRoles" [columns]="displayedColumns3" tableType="user_roles"></app-data-table>
+  <h2>User Projects</h2>
+  <app-data-table [data]="dataSource4" [columns]="displayedColumns4"></app-data-table>
+</div>
