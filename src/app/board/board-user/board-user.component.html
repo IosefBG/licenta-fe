@@ -21,12 +21,18 @@
           {{ day.date | date:'EEE' }}  {{ day.date | date:'d' }}
         </div>
         <div class="day" *ngFor="let day of getDisplayedDays()" (click)="openModal(day)">
-            <button mat-icon-button (click)="openTimesheetModal(day)">
-              <mat-icon>add</mat-icon>
-            </button>
+          <button mat-icon-button *ngIf="!day.displayProject" (click)="openTimesheetModal(day)">
+            <mat-icon>add</mat-icon>
+          </button>
+          <div class="project-section" *ngIf="day.displayProject">
+            <span class="project-name">Nume proiect: {{ day.displayProject }}</span><br>
+            <span class="project-hours">Ore pontate: {{ day.timesheetEntry?.hours }}</span>
+            <mat-icon class="delete-icon" (click)="deleteTimesheetRecord(day.timesheetEntry.id)"
+                      *ngIf="day.timesheetEntry.status ==='Init'">delete
+            </mat-icon>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>

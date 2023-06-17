@@ -169,7 +169,7 @@ export class ApiService {
       userId: this.storageService.getUser().id,
       projectId: value.project,
       hours: value.hours,
-      selectedDate: this.addDays(value.selectedDate, 1),
+      selectedDate: value.selectedDate,
       fromDate: this.addDays(value.dateRange.startDate, 1),
       toDate: this.addDays(value.dateRange.endDate, 1),
     }
@@ -180,5 +180,16 @@ export class ApiService {
   getUserTimesheet() {
     let param = new HttpParams().set('userId', this.storageService.getUser().id);
     return this.makeRequest('GET', 'user/getTimesheetByUserId', param);
+  }
+
+  getTimesheetByUserIdAndWeek(weekStartDate: string) {
+    const userId = this.storageService.getUser().id;
+    const url = `user/getTimesheetByUserId?userId=${userId}&weekStartDate=${weekStartDate}`;
+    return this.makeRequest('GET', url);
+  }
+
+  deleteTimesheetEntry(timesheetId: number) {
+    let param = new HttpParams().set('timesheetId', timesheetId.toString());
+    return this.makeRequest('DELETE', `user/deleteTimesheetEntry`, param);
   }
 }

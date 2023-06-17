@@ -37,7 +37,7 @@
 
 .week {
   border-radius: 5px;
-  color:black;
+  color: black;
   flex: 1;
   background-color: #f5f5f5;
   margin: 5px;
@@ -54,7 +54,7 @@
 }
 
 .days {
-  margin-top:25px;
+  margin-top: 25px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-gap: 5px;
@@ -67,14 +67,36 @@
   position: relative;
 }
 
-.project {
-  position: absolute;
-  bottom: 5px;
-  left: 5px;
+.project-section {
+  position: relative;
+}
+
+.project-name {
+  font-size: 14px;
+  color: black;
+}
+
+.project-hours {
   font-size: 12px;
   color: black;
 }
 
+.delete-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 16px;
+  color: red;
+  visibility: hidden;
+}
+
+.day:hover .delete-icon {
+  visibility: visible;
+}
+
 ::ng-deep .modal-backdrop {
   z-index: 1 !important; /* Adjust the z-index value as needed */
+}
+.project-section:hover .delete-icon {
+  display: block;
 }

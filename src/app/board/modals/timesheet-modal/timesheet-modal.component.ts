@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
+import { Component, Input, OnInit, Output, TemplateRef, ViewChild, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from "../../../shell/api.service";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +12,8 @@ export class TimesheetModalComponent implements OnInit {
   @ViewChild('timesheetModal') timesheetModal!: TemplateRef<any>;
   @Input() selectedDay: any;
   @Input() selectedWeek: any;
-  @Output() timesheetEntry: any;
+  @Output() output: EventEmitter<any> = new EventEmitter<any>(); // Add output EventEmitter
+  timesheetEntry: any;
   timesheetForm: FormGroup;
   projects: { projectName: string; projectId: number }[] = [];
   minDate: Date | undefined;
@@ -28,7 +29,6 @@ export class TimesheetModalComponent implements OnInit {
         startDate: ['', Validators.required],
         endDate: ['', Validators.required]
       })
-
     });
   }
 
@@ -55,8 +55,8 @@ export class TimesheetModalComponent implements OnInit {
 
   addTimesheetEntry() {
     this.apiService.addTimesheetEntry(this.timesheetForm.value).subscribe((res: any) => {
-      // console.log(res);
       this.timesheetEntry = res;
+      this.output.emit(this.timesheetEntry); // Emit the timesheetEntry
     })
     this.cancelTimesheetModal();
   }

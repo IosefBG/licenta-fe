@@ -1,12 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TimesheetModalComponent} from '../modals/timesheet-modal/timesheet-modal.component';
-import {ApiService} from "../../shell/api.service";
+import {ApiService} from '../../shell/api.service';
 
-interface Day {
-  date: Date;
-  timesheetEntry?: TimesheetEntry;
-}
 
 interface TimesheetEntry {
   project: string;
@@ -21,11 +17,9 @@ interface TimesheetEntry {
 })
 export class BoardUserComponent implements OnInit {
   selectedDate: Date;
-  calendarWeeks: Day[][] = [];
-  selectedDay: Day | null = null;
+  calendarWeeks: any[][] = [];
+  selectedDay: any | null = null;
   timesheetEntry: TimesheetEntry = {project: '', hours: null, minutes: null};
-  projects: string[] = ['Project 1', 'Project 2', 'Project 3'];
-  showAddIcon: { [date: string]: boolean } = {};
 
   constructor(private modalService: NgbModal, private apiService: ApiService) {
     this.selectedDate = new Date();
@@ -33,7 +27,7 @@ export class BoardUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getTimesheetEntry();
+    this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
   }
 
   generateCalendarWeeks() {
@@ -44,13 +38,13 @@ export class BoardUserComponent implements OnInit {
 
     currentDate.setDate(currentDate.getDate() - startOfWeek);
 
-    const weeks: Day[][] = [];
+    const weeks: any[][] = [];
 
     while (weeks.length < 6) {
-      const week: Day[] = [];
+      const week: any[] = [];
 
       for (let j = 0; j < 7; j++) {
-        const day: Day = { date: new Date(currentDate), timesheetEntry: undefined };
+        const day: any = {displayProject: '', date: new Date(currentDate), timesheetEntry: undefined};
         week.push(day);
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -64,8 +58,6 @@ export class BoardUserComponent implements OnInit {
 
     this.calendarWeeks = weeks;
   }
-
-
 
   getWeekNumber(date: Date) {
     const startOfWeek = new Date(date);
@@ -96,28 +88,81 @@ export class BoardUserComponent implements OnInit {
     const currentWeek = this.calendarWeeks.find(
       (week) => this.getWeekNumber(week[0].date) === this.getWeekNumber(this.selectedDate)
     );
-    return currentWeek ? currentWeek.slice(0, 7) : [];
+
+    if (currentWeek) {
+      return currentWeek.slice(0, 7).map((day) => {
+        const timesheetEntry = day.timesheetEntry;
+        if (timesheetEntry && timesheetEntry.project) {
+          day.displayProject = timesheetEntry.project;
+        } else {
+          day.displayProject = '';
+        }
+        return day;
+      });
+    }
+
+    return [];
   }
 
-  openModal(day: Day) {
+  openModal(day: any) {
     this.selectedDay = day;
   }
 
-  getTimesheetEntry() {
-    this.apiService.getUserTimesheet().subscribe((data: any) => {
-      console.log(data);
+  getTimesheetEntry(weekStartDate: string) {
+    this.apiService.getTimesheetByUserIdAndWeek(weekStartDate).subscribe((data: any) => {
+      if (Array.isArray(data)) {
+        this.populateTimesheetEntries(data);
+      }
     });
   }
 
-  openTimesheetModal(day: Day) {
+
+  populateTimesheetEntries(entries: any[]) {
+    // Iterate over the API response entries and update the calendarWeeks data structure
+    entries.forEach((entry) => {
+      const selectedDate = new Date(entry.selectedDate);
+      const weekIndex = this.calendarWeeks.findIndex((week) => {
+        return week.some((day) => {
+          return this.isSameDate(day.date, selectedDate);
+        });
+      });
+
+      if (weekIndex !== -1) {
+        const dayIndex = this.calendarWeeks[weekIndex].findIndex((day) => {
+          return this.isSameDate(day.date, selectedDate);
+        });
+
+        if (dayIndex !== -1) {
+          const day = this.calendarWeeks[weekIndex][dayIndex];
+          day.timesheetEntry = {
+            id: entry.id,
+            // projectid: entry.project.userProjectId,
+            status: entry.status,
+            project: entry.project.project.projectName,
+            hours: entry.hours,
+          };
+        }
+      }
+    });
+  }
+
+  isSameDate(date1: Date, date2: Date) {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
+  openTimesheetModal(day: any) {
     this.selectedDay = day;
     this.timesheetEntry = {project: '', hours: null, minutes: null};
     const modalRef = this.modalService.open(TimesheetModalComponent, {backdropClass: 'custom-modal-backdrop'});
     modalRef.componentInstance.selectedDay = day;
     modalRef.componentInstance.selectedWeek = this.getWeekPeriod(this.selectedDate);
-    modalRef.componentInstance.output.subscribe((result: any) => {
-      console.log(result)
-      console.log("hit")
+    modalRef.componentInstance.output.subscribe((result: TimesheetEntry) => {
+      console.log(result);
+      this.updateTimesheetEntry(result);
     });
     modalRef.result.then(
       (result) => {
@@ -133,6 +178,12 @@ export class BoardUserComponent implements OnInit {
     );
   }
 
+  updateTimesheetEntry(newEntry: TimesheetEntry) {
+    if (this.selectedDay) {
+      this.selectedDay.timesheetEntry = newEntry;
+    }
+  }
+
   addTimesheetEntry() {
     if (
       this.selectedDay &&
@@ -140,12 +191,13 @@ export class BoardUserComponent implements OnInit {
       this.timesheetEntry.project &&
       this.timesheetEntry.hours
     ) {
-      this.selectedDay.timesheetEntry = {
+      this.updateTimesheetEntry({
         project: this.timesheetEntry.project,
         hours: this.timesheetEntry.hours,
         minutes: this.timesheetEntry.minutes || null,
-      };
+      });
       this.cancelModal();
+      this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
     }
   }
 
@@ -161,5 +213,14 @@ export class BoardUserComponent implements OnInit {
     currentDate.setDate(currentDate.getDate() + offset * 7);
     this.selectedDate = currentDate;
     this.generateCalendarWeeks();
+    this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
+  }
+
+  deleteTimesheetRecord(timesheetId: number) {
+    this.apiService.deleteTimesheetEntry(timesheetId).subscribe(() => {
+      // window.alert('Timesheet entry deleted successfully');
+      window.location.reload();
+      // this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
+    });
   }
 }
