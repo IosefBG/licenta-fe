@@ -177,4 +177,8 @@ export class ApiService {
   }
 
 
+  getUserTimesheet() {
+    let param = new HttpParams().set('userId', this.storageService.getUser().id);
+    return this.makeRequest('GET', 'user/getTimesheetByUserId', param);
+  }
 }

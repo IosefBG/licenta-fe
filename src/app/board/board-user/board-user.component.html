@@ -21,14 +21,9 @@
           {{ day.date | date:'EEE' }}  {{ day.date | date:'d' }}
         </div>
         <div class="day" *ngFor="let day of getDisplayedDays()" (click)="openModal(day)">
-          <div class="project" *ngIf="day.timesheetEntry">
-            {{ day.timesheetEntry.project }} - {{ day.timesheetEntry.hours }}h
-          </div>
-          <div class="add-icon" *ngIf="!day.timesheetEntry">
             <button mat-icon-button (click)="openTimesheetModal(day)">
               <mat-icon>add</mat-icon>
             </button>
-          </div>
         </div>
       </div>
     </div>

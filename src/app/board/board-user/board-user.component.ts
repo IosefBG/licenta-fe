@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TimesheetModalComponent} from '../modals/timesheet-modal/timesheet-modal.component';
+import {ApiService} from "../../shell/api.service";
 
 interface Day {
   date: Date;
@@ -18,7 +19,7 @@ interface TimesheetEntry {
   templateUrl: './board-user.component.html',
   styleUrls: ['./board-user.component.css'],
 })
-export class BoardUserComponent {
+export class BoardUserComponent implements OnInit {
   selectedDate: Date;
   calendarWeeks: Day[][] = [];
   selectedDay: Day | null = null;
@@ -26,9 +27,13 @@ export class BoardUserComponent {
   projects: string[] = ['Project 1', 'Project 2', 'Project 3'];
   showAddIcon: { [date: string]: boolean } = {};
 
-  constructor(private modalService: NgbModal) {
+  constructor(private modalService: NgbModal, private apiService: ApiService) {
     this.selectedDate = new Date();
     this.generateCalendarWeeks();
+  }
+
+  ngOnInit(): void {
+    this.getTimesheetEntry();
   }
 
   generateCalendarWeeks() {
@@ -98,12 +103,22 @@ export class BoardUserComponent {
     this.selectedDay = day;
   }
 
+  getTimesheetEntry() {
+    this.apiService.getUserTimesheet().subscribe((data: any) => {
+      console.log(data);
+    });
+  }
+
   openTimesheetModal(day: Day) {
     this.selectedDay = day;
     this.timesheetEntry = {project: '', hours: null, minutes: null};
     const modalRef = this.modalService.open(TimesheetModalComponent, {backdropClass: 'custom-modal-backdrop'});
     modalRef.componentInstance.selectedDay = day;
     modalRef.componentInstance.selectedWeek = this.getWeekPeriod(this.selectedDate);
+    modalRef.componentInstance.output.subscribe((result: any) => {
+      console.log(result)
+      console.log("hit")
+    });
     modalRef.result.then(
       (result) => {
         if (result === 'save') {
