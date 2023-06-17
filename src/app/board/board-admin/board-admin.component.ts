@@ -85,7 +85,6 @@ export class BoardAdminComponent implements OnInit {
     });
     this.apiService.getUsersWithProjects().subscribe((data: any) => {
       // this.usersWithProjects = data;
-      console.log(data)
       this.dataSource4 = new MatTableDataSource(data);
     });
     this.myForm = this.formBuilder.group({
@@ -127,7 +126,6 @@ export class BoardAdminComponent implements OnInit {
 
   onUserProjectFormSubmit() {
     if (this.userProjectForm.valid) {
-      console.log(this.userProjectForm.value)
       const payload = {
         userId: this.userProjectForm.value.selectedUser.id,
         projectId: this.userProjectForm.value.selectedProject.id

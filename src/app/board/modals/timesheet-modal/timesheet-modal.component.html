@@ -16,28 +16,30 @@
       <mat-label>Hours</mat-label>
       <input matInput type="number" placeholder="Hours" formControlName="hours">
     </mat-form-field>
+    <!-- Single Date -->
     <mat-form-field *ngIf="!timesheetForm.get('periodCheckboxChecked')?.value">
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="selectedDate">
+      <input matInput [matDatepicker]="picker" formControlName="selectedDate" [min]="minDate" [max]="maxDate">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+
     <mat-form-field *ngIf="timesheetForm.get('periodCheckboxChecked')?.value">
-      <mat-label>From Date</mat-label>
-      <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate">
-      <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #fromDatePicker></mat-datepicker>
+      <mat-label>Select a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange" [min]="minDate" [max]="maxDate">
+        <input matStartDate placeholder="Start date" formControlName="startDate">
+        <input matEndDate placeholder="End date" formControlName="endDate">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field *ngIf="timesheetForm.get('periodCheckboxChecked')?.value">
-      <mat-label>To Date</mat-label>
-      <input matInput [matDatepicker]="toDatePicker" formControlName="toDate">
-      <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #toDatePicker></mat-datepicker>
-    </mat-form-field>
-    <mat-checkbox formControlName="periodCheckboxChecked">Period</mat-checkbox>
+
+
+
+    <mat-checkbox formControlName="periodCheckboxChecked" (change)="updateFromDate()">Period</mat-checkbox>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" [disabled]="timesheetForm.invalid">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
     <button type="button" class="btn btn-secondary" (click)="cancelTimesheetModal()">Cancel</button>
   </div>
 </form>

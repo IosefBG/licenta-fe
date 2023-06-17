@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {StorageService} from "../_services/storage.service";
+import {TimesheetEntry} from "../shared/interfaces/TimesheetEntry";
 
 @Injectable({
   providedIn: 'root',
@@ -15,30 +16,23 @@ export class ApiService {
   }
 
   private getHeaders(): HttpHeaders {
-    const headers = new HttpHeaders({
+    return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + localStorage.getItem('token'),
     });
-    return headers;
   }
 
   private buildRequestOptions(params: HttpParams | null = null): any {
     const headers = this.getHeaders();
-    const requestOptions = {
+    return {
       headers: headers,
       withCredentials: true,
       params: params,
     };
-    return requestOptions;
   }
 
   private handleResponse(response: Observable<any>): Observable<any> {
     return response;
-  }
-
-  private handleError(error: any): Observable<never> {
-    console.error('An error occurred:', error);
-    throw error;
   }
 
   private makeRequest(
@@ -155,30 +149,31 @@ export class ApiService {
     return this.makeRequest('GET', 'user/getProjectsByUserId', param);
   }
 
-  addTimesheetEntry(value: any, selectedWeek: any) {
-    console.log(value);
-    const [startWeekDay, endWeekDay] = selectedWeek.split(" - ").map(Number);
-    const params = new HttpParams()
-      .set('userId', this.storageService.getUser().id)
-      .set('projectId', value.project)
-      .set('hours', value.hours)
-      .set('weekStartDay', startWeekDay)
-      .set('weekEndDay', endWeekDay);
-
-    if (value.selectedDate) {
-      const selectedDateWithoutTimezone = new Date(value.selectedDate).toISOString().split('T')[0];
-      params.set('selectedDate', selectedDateWithoutTimezone);
+  addDays(date: Date | null, days: number): Date | null {
+    if (!date) {
+      return null;
     }
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
 
+  addTimesheetEntry(value: TimesheetEntry) {
     if (value.periodCheckboxChecked) {
-      const fromDate = new Date(value.fromDate);
-      const toDate = new Date(value.toDate);
-      const fromDateFormatted = fromDate.toISOString().split('T')[0];
-      const toDateFormatted = toDate.toISOString().split('T')[0];
-      params.set('fromDate', fromDateFormatted).set('toDate', toDateFormatted);
+      value.selectedDate = null;
+    } else {
+      value.dateRange.startDate = null;
+      value.dateRange.endDate = null;
     }
-
-    return this.makeRequest('PUT', 'user/addTimesheet', params);
+    const body = {
+      userId: this.storageService.getUser().id,
+      projectId: value.project,
+      hours: value.hours,
+      selectedDate: this.addDays(value.selectedDate, 1),
+      fromDate: this.addDays(value.dateRange.startDate, 1),
+      toDate: this.addDays(value.dateRange.endDate, 1),
+    }
+    return this.makeRequest('PUT', 'user/addTimesheet', null, body);
   }
 
 
