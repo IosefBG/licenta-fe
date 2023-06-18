@@ -10,23 +10,25 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTableModule} from "@angular/material/table";
 import {DataTableModule} from "../../shared/data-table/data-table.module";
 import {MatButtonModule} from "@angular/material/button";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 
 @NgModule({
   declarations: [
     BoardAdminComponent
   ],
-  imports: [
-    CommonModule,
-    BoardAdminRoutingModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatTableModule,
-    DataTableModule,
-    MatButtonModule
-  ]
+    imports: [
+        CommonModule,
+        BoardAdminRoutingModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatTableModule,
+        DataTableModule,
+        MatButtonModule,
+        MatDatepickerModule
+    ]
 })
 export class BoardAdminModule { }

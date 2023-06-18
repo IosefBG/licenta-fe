@@ -10,6 +10,14 @@ table {
   border-collapse: collapse;
 }
 
+.jumbotron{
+  background-color: #222;
+  color: white;
+  margin-bottom: 0;
+  padding: 20px;
+  margin-top:10px;
+}
+
 th,
 td {
   padding: 10px;
@@ -89,4 +97,13 @@ th, td {
 
 .item {
   margin-bottom: 8px;
+}
+
+.mat-paginator {
+  background-color: #222;
+  color: white;
+}
+
+th.mat-header-cell {
+  text-align: center !important;
 }

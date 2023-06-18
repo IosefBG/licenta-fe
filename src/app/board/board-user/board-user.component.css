@@ -30,10 +30,6 @@
   margin: 0 20px;
 }
 
-.week-container {
-  display: flex;
-  justify-content: center;
-}
 
 .week {
   border-radius: 5px;
@@ -51,6 +47,7 @@
 .week-period {
   margin-left: 10px;
   font-weight: normal;
+  text-align: center;
 }
 
 .days {

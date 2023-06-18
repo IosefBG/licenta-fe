@@ -38,7 +38,6 @@
     </mat-form-field>
     <button class="custom-button" color="primary" type="submit">Submit</button>
   </form>
-
   <form [formGroup]="userProjectForm" (ngSubmit)="onUserProjectFormSubmit()" class="form-container">
     <h2>Assign project to user</h2>
     <mat-form-field appearance="outline" class="form-field">
@@ -62,7 +61,26 @@
     <button class="custom-button" color="primary" type="submit">Save</button>
   </form>
 </div>
+<div class="form-row">
+  <form [formGroup]="reportForm" (ngSubmit)="downloadReport()" class="form-container">
+    <h2>Download Reports</h2>
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+    </mat-form-field>
 
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>End Date</mat-label>
+      <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <button class="custom-button" color="primary" type="submit">Download</button>
+  </form>
+</div>
 <div class="content">
   <h2>Managers</h2>
   <app-data-table [data]="dataSource" [columns]="displayedColumns"></app-data-table>

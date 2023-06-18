@@ -81,7 +81,6 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
 
     for (const item of this.dataSource.data) {
       const fromDate = new Date(item.fromDate);
-      const toDate = new Date(item.toDate);
       const weekStartDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - fromDate.getDay() + 1); // Set week start to Monday
       const weekEndDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() + (6 - fromDate.getDay())); // Set week end to Sunday
 
@@ -114,8 +113,7 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
           existingRow.sun.push(item);
         }
       } else {
-        // Add a new row for unique weekStartDate and weekEndDate
-        const newRow = { ...item };
+        const newRow = {...item};
         newRow.fromDate = weekStartDate.toISOString().substring(0, 10);
         newRow.toDate = weekEndDate.toISOString().substring(0, 10);
         newRow.mon = isDay(item.selectedDate, 'mon') ? [item] : [];
@@ -134,13 +132,10 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
   }
 
 
-
-
-
-  isDay(selectedDate: string, day: string): boolean {
-    const date = new Date(selectedDate);
-    return date.toLocaleDateString('en-US', {weekday: 'short'}) === day;
+  updateStatus(status: string, startDate: string, endDate: string) {
+    this.apiService.updateTimesheetStatus(status, startDate, endDate).subscribe(() => {
+      window.location.reload()
+    });
   }
 }
-
 

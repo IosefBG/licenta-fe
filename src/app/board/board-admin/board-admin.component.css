@@ -1,7 +1,6 @@
 body {
   margin: 25px;
   background-color: grey;
-  color: #fff;
 }
 
 table {
@@ -14,7 +13,6 @@ th,
 td {
   padding: 10px;
   border: 1px solid #555;
-  color: white; /* Set the text color to white */
 }
 
 .form-field {
@@ -77,8 +75,17 @@ td {
   border-radius: 4px; /* Add rounded corners */
   cursor: pointer; /* Change the cursor to a pointer on hover */
 }
-
-.custom-button:hover {
-  background-color: #555; /* Change the background color on hover */
+.mat-calendar-body-cell-content, .mat-date-range-input-separator {
+  color: white!important;
+}
+.mat-calendar-body-label{
+  color: white!important;
+}
+.mat-form-field-appearance-outline .mat-form-field-outline .mat-input-element {
+  color: black; /* Set the desired text color */
 }
 
+
+.mat-input-element {
+  color: black!important; /* Set the desired text color */
+}

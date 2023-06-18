@@ -58,12 +58,17 @@ export class ApiService {
       case 'DELETE':
         response = this.http.delete(url, requestOptions);
         break;
+      case 'DOWNLOAD':
+        requestOptions.responseType = 'arraybuffer' as 'json'; // Set the responseType to arraybuffer
+        response = this.http.get(url, requestOptions);
+        break;
       default:
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
     return this.handleResponse(response);
   }
+
 
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
@@ -202,4 +207,12 @@ export class ApiService {
   getTimesheets() {
     return this.makeRequest('GET', 'manager/users');
   }
+
+  downloadExcelFile(fromDate:string,toDate:string): Observable<ArrayBuffer> {
+    // const fromDate = '2023-06-12'; // Specify the fromDate value
+    // const toDate = '2023-06-25'; // Specify the toDate value
+    let param = new HttpParams().set('fromDate', fromDate).set('toDate', toDate);
+    return this.makeRequest('DOWNLOAD', 'admin/generateRaporttimesheets', param);
+  }
+
 }

@@ -23,8 +23,6 @@ export interface Role {
 })
 
 export class BoardAdminComponent implements OnInit {
-  content?: string;
-
   myForm: FormGroup = new FormGroup({});
   userRole: FormGroup = new FormGroup({});
   managers: any[] = [];
@@ -38,7 +36,6 @@ export class BoardAdminComponent implements OnInit {
   dataSource2: any;
   displayedColumns2: string[] = ['projectId', 'projectName', 'managerId', 'managerUsername'];
   displayedColumns3: string[] = ['id', 'username'];
-
   displayedColumns4 = [
     'userProjectId',
     'userId',
@@ -50,11 +47,10 @@ export class BoardAdminComponent implements OnInit {
     'managerUsername',
     'managerEmail',
   ];
-  dataSource4 :MatTableDataSource<any> = new MatTableDataSource()
-
-
+  dataSource4: MatTableDataSource<any> = new MatTableDataSource()
   selectedUser: UserWithMissingRoles | undefined;
-  usersWithProjects: any;
+  reportForm: FormGroup = new FormGroup({})
+
 
   constructor(private apiService: ApiService, private formBuilder: FormBuilder) {
     this.userProjectForm = this.formBuilder.group({
@@ -64,6 +60,10 @@ export class BoardAdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.reportForm = this.formBuilder.group({
+      startDate: [''], // Add default or initial value if needed
+      endDate: [''], // Add default or initial value if needed
+    });
     this.apiService.getManagers().subscribe((data: any) => {
       this.managers = data;
       this.dataSource = new MatTableDataSource(data);
@@ -131,10 +131,21 @@ export class BoardAdminComponent implements OnInit {
         projectId: this.userProjectForm.value.selectedProject.id
       };
 
-      this.apiService.saveUserProject(payload).subscribe((res:any) => {
+      this.apiService.saveUserProject(payload).subscribe((res: any) => {
         console.log(res)
-        // Data saved successfully, perform any additional actions if needed
       });
     }
+  }
+
+  downloadReport() {
+    const startDate = this.reportForm.get('startDate')?.value.toISOString().split('T')[0];
+    const endDate = this.reportForm.get('endDate')?.value.toISOString().split('T')[0];
+    this.apiService.downloadExcelFile(startDate, endDate).subscribe((data: ArrayBuffer) => {
+      const blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'timesheet_report.xlsx';
+      link.click();
+    });
   }
 }

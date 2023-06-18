@@ -1,14 +1,16 @@
 <div class="container">
   <h1>Timesheet</h1>
 
-  <div class="navigation">
-    <button mat-icon-button (click)="changeWeek(-1)">
-      <mat-icon>keyboard_arrow_left</mat-icon>
-    </button>
-    <h2>{{ getWeekNumber(selectedDate) }}</h2>
-    <button mat-icon-button (click)="changeWeek(1)">
-      <mat-icon>keyboard_arrow_right</mat-icon>
-    </button>
+  <div class="navigation-wrapper">
+    <div class="navigation">
+      <button mat-icon-button (click)="changeWeek(-1)">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <h2>{{ getWeekNumber(selectedDate) }}</h2>
+      <button mat-icon-button (click)="changeWeek(1)">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
     <div class="send_timesheet_wrapper">
       <button class="send_timesheet" (click)="sendTimesheet(getDisplayedDays())">
         Trimite timesheet
