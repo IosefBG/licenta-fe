@@ -67,6 +67,14 @@
   position: relative;
 }
 
+.project-wrapper {
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 10px; /* Add margin-bottom for spacing */
+}
+
 .project-section {
   position: relative;
 }
@@ -88,15 +96,22 @@
   font-size: 16px;
   color: red;
   visibility: hidden;
-}
-
-.day:hover .delete-icon {
-  visibility: visible;
+  cursor: pointer;
 }
 
 ::ng-deep .modal-backdrop {
   z-index: 1 !important; /* Adjust the z-index value as needed */
 }
 .project-section:hover .delete-icon {
-  display: block;
+  visibility: visible;
+}
+
+.send_timesheet_wrapper {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.status {
+  flex-grow: 1;
+  text-align: right;
 }

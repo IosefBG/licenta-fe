@@ -183,13 +183,19 @@ export class ApiService {
   }
 
   getTimesheetByUserIdAndWeek(weekStartDate: string) {
-    const userId = this.storageService.getUser().id;
-    const url = `user/getTimesheetByUserId?userId=${userId}&weekStartDate=${weekStartDate}`;
-    return this.makeRequest('GET', url);
+    let param = new HttpParams().set('userId', this.storageService.getUser().id).set('weekStartDate', weekStartDate)
+    // const userId = this.storageService.getUser().id;
+    // const url = `user/getTimesheetByUserId?userId=${userId}&weekStartDate=${weekStartDate}`;
+    return this.makeRequest('GET', 'user/getTimesheetByUserId', param);
   }
 
   deleteTimesheetEntry(timesheetId: number) {
     let param = new HttpParams().set('timesheetId', timesheetId.toString());
     return this.makeRequest('DELETE', `user/deleteTimesheetEntry`, param);
+  }
+
+  updateTimesheetStatus(pending: string, startweek: string, endweek: string) {
+    let param = new HttpParams().set('userId', this.storageService.getUser().id).set('status', pending).set('startWeek', startweek).set('endWeek', endweek);
+    return this.makeRequest('POST', `user/updateTimesheetEntry`, param);
   }
 }

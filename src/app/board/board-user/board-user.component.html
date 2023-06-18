@@ -9,29 +9,43 @@
     <button mat-icon-button (click)="changeWeek(1)">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
+    <div class="send_timesheet_wrapper">
+      <button class="send_timesheet" (click)="sendTimesheet(getDisplayedDays())">
+        Trimite timesheet
+      </button>
+    </div>
   </div>
 
   <div class="week-container">
     <div class="week">
       <div class="week-header">
         <span class="week-period">({{ getWeekPeriod(selectedDate) }})</span>
+        <div class="status">
+          <span class="status-name">Status: {{ getFirstStatus(getDisplayedDays()) }}</span>
+        </div>
       </div>
       <div class="days">
         <div class="day-name" *ngFor="let day of getDisplayedDays()">
           {{ day.date | date:'EEE' }}  {{ day.date | date:'d' }}
         </div>
         <div class="day" *ngFor="let day of getDisplayedDays()" (click)="openModal(day)">
-          <button mat-icon-button *ngIf="!day.displayProject" (click)="openTimesheetModal(day)">
-            <mat-icon>add</mat-icon>
-          </button>
-          <div class="project-section" *ngIf="day.displayProject">
-            <span class="project-name">Nume proiect: {{ day.displayProject }}</span><br>
-            <span class="project-hours">Ore pontate: {{ day.timesheetEntry?.hours }}</span>
-            <mat-icon class="delete-icon" (click)="deleteTimesheetRecord(day.timesheetEntry.id)"
-                      *ngIf="day.timesheetEntry.status ==='Init'">delete
-            </mat-icon>
+          <div class="project-wrapper" *ngFor="let project of day.displayProjects; let i = index">
+            <div class="project-section">
+              <span class="project-name">Project Name: {{ project }}</span><br>
+              <span class="project-hours">Recorded Hours: {{ day.timesheetEntry?.hours }}</span>
+              <mat-icon class="delete-icon" (click)="deleteTimesheetRecord(day.timesheetEntry.projects[i].id)"
+                        *ngIf="day.timesheetEntry.projects[i].status === 'Initializat'">delete
+              </mat-icon>
+            </div>
+          </div>
+          <div class="add-project-container"
+               *ngIf="getFirstStatus(getDisplayedDays()) ==='Initializat' || getFirstStatus(getDisplayedDays()) ==='Nu s-a gasit nici un proiect'">
+            <button mat-icon-button (click)="openTimesheetModal(day)">
+              <mat-icon>add</mat-icon>
+            </button>
           </div>
         </div>
+
       </div>
     </div>
   </div>

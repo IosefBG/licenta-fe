@@ -3,7 +3,6 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TimesheetModalComponent} from '../modals/timesheet-modal/timesheet-modal.component';
 import {ApiService} from '../../shell/api.service';
 
-
 interface TimesheetEntry {
   project: string;
   hours: number | null;
@@ -27,6 +26,10 @@ export class BoardUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getTimesheet()
+  }
+
+  getTimesheet() {
     this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
   }
 
@@ -92,10 +95,10 @@ export class BoardUserComponent implements OnInit {
     if (currentWeek) {
       return currentWeek.slice(0, 7).map((day) => {
         const timesheetEntry = day.timesheetEntry;
-        if (timesheetEntry && timesheetEntry.project) {
-          day.displayProject = timesheetEntry.project;
+        if (timesheetEntry && timesheetEntry.projects.length > 0) {
+          day.displayProjects = timesheetEntry.projects.map((project: any) => project.projectName);
         } else {
-          day.displayProject = '';
+          day.displayProjects = [];
         }
         return day;
       });
@@ -103,6 +106,7 @@ export class BoardUserComponent implements OnInit {
 
     return [];
   }
+
 
   openModal(day: any) {
     this.selectedDay = day;
@@ -134,17 +138,23 @@ export class BoardUserComponent implements OnInit {
 
         if (dayIndex !== -1) {
           const day = this.calendarWeeks[weekIndex][dayIndex];
-          day.timesheetEntry = {
+          const projectEntry = {
             id: entry.id,
-            // projectid: entry.project.userProjectId,
-            status: entry.status,
-            project: entry.project.project.projectName,
+            projectName: entry.project.project.projectName,
             hours: entry.hours,
+            status: entry.status,
           };
+          if (!day.timesheetEntry) {
+            day.timesheetEntry = {projects: [projectEntry], hours: entry.hours};
+          } else {
+            day.timesheetEntry.projects.push(projectEntry);
+            day.timesheetEntry.hours += entry.hours;
+          }
         }
       }
     });
   }
+
 
   isSameDate(date1: Date, date2: Date) {
     return (
@@ -161,8 +171,8 @@ export class BoardUserComponent implements OnInit {
     modalRef.componentInstance.selectedDay = day;
     modalRef.componentInstance.selectedWeek = this.getWeekPeriod(this.selectedDate);
     modalRef.componentInstance.output.subscribe((result: TimesheetEntry) => {
-      console.log(result);
       this.updateTimesheetEntry(result);
+      window.location.reload();
     });
     modalRef.result.then(
       (result) => {
@@ -197,7 +207,8 @@ export class BoardUserComponent implements OnInit {
         minutes: this.timesheetEntry.minutes || null,
       });
       this.cancelModal();
-      this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
+      this.getTimesheet()
+      // this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
     }
   }
 
@@ -213,14 +224,37 @@ export class BoardUserComponent implements OnInit {
     currentDate.setDate(currentDate.getDate() + offset * 7);
     this.selectedDate = currentDate;
     this.generateCalendarWeeks();
-    this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
+    this.getTimesheet()
+    // this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
   }
 
   deleteTimesheetRecord(timesheetId: number) {
     this.apiService.deleteTimesheetEntry(timesheetId).subscribe(() => {
-      // window.alert('Timesheet entry deleted successfully');
       window.location.reload();
+      // this.getTimesheet()
       // this.getTimesheetEntry(this.getDisplayedDays()[0].date.toISOString().split('T')[0]);
     });
   }
+
+  sendTimesheet(days: any) {
+    const startweek = days[0].date.toISOString().split('T')[0]
+    const endweek = days[days.length - 1].date.toISOString().split('T')[0]
+    this.apiService.updateTimesheetStatus('In asteptare', startweek, endweek).subscribe(() => {
+      window.location.reload();
+    });
+  }
+  getFirstStatus(days: any[]): string {
+    // Iterate over the days to find the first status from the projects
+    for (const day of days) {
+      if (day.timesheetEntry && day.timesheetEntry.projects.length > 0) {
+        const firstProjectStatus = day.timesheetEntry.projects[0].status;
+        if (firstProjectStatus) {
+          return firstProjectStatus;
+        }
+      }
+    }
+    // Return a default status if no projects are found
+    return 'Nu s-a gasit nici un proiect';
+  }
+
 }
