@@ -198,4 +198,8 @@ export class ApiService {
     let param = new HttpParams().set('userId', this.storageService.getUser().id).set('status', pending).set('startWeek', startweek).set('endWeek', endweek);
     return this.makeRequest('POST', `user/updateTimesheetEntry`, param);
   }
+
+  getTimesheets() {
+    return this.makeRequest('GET', 'manager/users');
+  }
 }

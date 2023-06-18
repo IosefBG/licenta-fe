@@ -1,9 +1,63 @@
-<div class="container">
-  <header class="jumbotron">
-    <p>{{ content }}</p>
-  </header>
-  <mat-form-field>
-    <input [formControl]="filterControl" matInput placeholder="Filter">
-  </mat-form-field>
-  <app-data-table [columns]="displayedColumns" [data]="dataSource"></app-data-table>
-</div>
+<header class="jumbotron">
+  <p>{{ content }}</p>
+</header>
+<mat-form-field>
+  <input [formControl]="filterControl" matInput placeholder="Filter">
+</mat-form-field>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="userid">
+    <th mat-header-cell *matHeaderCellDef>Id user</th>
+    <td mat-cell *matCellDef="let element">{{ element.user.id }}</td>
+  </ng-container>
+  <ng-container matColumnDef="weekStartDate">
+    <th mat-header-cell *matHeaderCellDef>Data inceput saptamana</th>
+    <td mat-cell *matCellDef="let element">{{ element.fromDate }}</td>
+  </ng-container>
+  <ng-container matColumnDef="weekEndDate">
+    <th mat-header-cell *matHeaderCellDef>Data sfarsit saptamana</th>
+    <td mat-cell *matCellDef="let element">{{ element.toDate }}</td>
+  </ng-container>
+  <!--  <ng-container matColumnDef="projectname">-->
+  <!--    <th mat-header-cell *matHeaderCellDef>Nume proiect</th>-->
+  <!--    <td mat-cell *matCellDef="let element">{{ element.project.project.projectName }}</td>-->
+  <!--  </ng-container>-->
+  <!--  <ng-container matColumnDef="projectid">-->
+  <!--    <th mat-header-cell *matHeaderCellDef>Project ID</th>-->
+  <!--    <td mat-cell *matCellDef="let element">{{ element.projectId }}</td>-->
+  <!--  </ng-container>-->
+
+  <ng-container *ngFor="let day of days; let i = index" [matColumnDef]="day">
+    <th mat-header-cell *matHeaderCellDef>{{ days_name[i] }}</th>
+    <td mat-cell *matCellDef="let element" class="cell">
+      <div *ngIf="element[day] && element[day].length > 0; else naBlock">
+        <div *ngFor="let item of element[day]" class="item">
+          <div>Id Proiect: <b>{{ item.project.userProjectId }}</b></div>
+          <div>Proiect: <b>{{ item.project.project.projectName }}</b></div>
+          <div>Ore: <b>{{ item.hours }}</b></div>
+        </div>
+      </div>
+      <ng-template #naBlock>
+        <div class="na">N/A</div>
+      </ng-template>
+    </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let element">
+      <button> Accepta</button>
+      <button> Refuza</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

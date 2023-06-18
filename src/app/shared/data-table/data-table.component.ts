@@ -15,13 +15,15 @@ export class DataTableComponent implements OnInit {
   form: FormGroup = new FormGroup({})
 
   constructor(private readonly apiService: ApiService, private formBuilder: FormBuilder) {
-  }
-
-  ngOnInit(): void {
     this.form = this.formBuilder.group({});
+
     if (this.tableType === 'user_roles') {
       this.columns = [...this.columns, 'roles', 'actions']
     }
+  }
+
+  ngOnInit(): void {
+    console.log("data",this.data)
   }
 
   removeRole(user: any) {
@@ -44,7 +46,15 @@ export class DataTableComponent implements OnInit {
   }
 
 
-  getSelectedRoleId(user:any) {
+  getSelectedRoleId(user: any) {
     return user.selectedRoleId;
+  }
+
+  acceptTimesheet(timesheet: any) {
+    // Logic to accept the timesheet
+  }
+
+  rejectTimesheet(timesheet: any) {
+    // Logic to reject the timesheet
   }
 }

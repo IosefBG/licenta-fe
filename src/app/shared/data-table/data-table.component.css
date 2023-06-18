@@ -11,6 +11,7 @@ th.mat-header-cell {
 }
 
 .mat-table {
+  color: black;
   margin: 0 auto; /* Center the table horizontally */
 }
 
@@ -22,3 +23,4 @@ li {
 mat-form-field{
   margin-top:15px;
 }
+

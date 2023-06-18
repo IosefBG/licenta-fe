@@ -7,6 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatTableModule} from "@angular/material/table";
 import {DataTableModule} from "../../shared/data-table/data-table.module";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {DataTableModule} from "../../shared/data-table/data-table.module";
     MatTableModule,
     MatInputModule,
     DataTableModule,
+    MatPaginatorModule,
     // BrowserAnimationsModule,
   ]
 })
