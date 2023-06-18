@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {ApiService} from "../../shell/api.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -8,7 +8,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent {
   @Input() data: MatTableDataSource<any> = new MatTableDataSource()
   @Input() columns: string[] = [];
   @Input() tableType: string | undefined;
@@ -20,10 +20,6 @@ export class DataTableComponent implements OnInit {
     if (this.tableType === 'user_roles') {
       this.columns = [...this.columns, 'roles', 'actions']
     }
-  }
-
-  ngOnInit(): void {
-    console.log("data",this.data)
   }
 
   removeRole(user: any) {
