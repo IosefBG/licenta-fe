@@ -69,7 +69,6 @@ export class ApiService {
     return this.handleResponse(response);
   }
 
-
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
     return this.makeRequest('POST', 'user/signin', null, body);
@@ -86,10 +85,6 @@ export class ApiService {
 
   refreshToken(): Observable<any> {
     return this.makeRequest('POST', 'user/refreshtoken');
-  }
-
-  getUsers(): Observable<any> {
-    return this.makeRequest('GET', 'manager/users');
   }
 
   addProject(projectname: string, manager: string): Observable<any> {
@@ -181,16 +176,8 @@ export class ApiService {
     return this.makeRequest('PUT', 'user/addTimesheet', null, body);
   }
 
-
-  getUserTimesheet() {
-    let param = new HttpParams().set('userId', this.storageService.getUser().id);
-    return this.makeRequest('GET', 'user/getTimesheetByUserId', param);
-  }
-
   getTimesheetByUserIdAndWeek(weekStartDate: string) {
     let param = new HttpParams().set('userId', this.storageService.getUser().id).set('weekStartDate', weekStartDate)
-    // const userId = this.storageService.getUser().id;
-    // const url = `user/getTimesheetByUserId?userId=${userId}&weekStartDate=${weekStartDate}`;
     return this.makeRequest('GET', 'user/getTimesheetByUserId', param);
   }
 
@@ -209,8 +196,6 @@ export class ApiService {
   }
 
   downloadExcelFile(fromDate:string,toDate:string): Observable<ArrayBuffer> {
-    // const fromDate = '2023-06-12'; // Specify the fromDate value
-    // const toDate = '2023-06-25'; // Specify the toDate value
     let param = new HttpParams().set('fromDate', fromDate).set('toDate', toDate);
     return this.makeRequest('DOWNLOAD', 'admin/generateRaporttimesheets', param);
   }

@@ -51,9 +51,11 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.summarizeData();
+      // console.log(this.dataSource)
 
       // Create a new MatTableDataSource for the summarized data
       const summarizedDataSource = new MatTableDataSource(this.summarizedData);
+      console.log(this.summarizedData)
       summarizedDataSource.paginator = this.paginator;
       summarizedDataSource.sort = this.sort;
       this.dataSource = summarizedDataSource;
@@ -79,12 +81,13 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
     // Map the data to unique rows by weekStartDate and weekEndDate
     const uniqueRows = new Map<string, any>();
 
-    for (const item of this.dataSource.data) {
+    for (const item of this.dataSource.filteredData) {
       const fromDate = new Date(item.fromDate);
       const weekStartDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() - fromDate.getDay() + 1); // Set week start to Monday
       const weekEndDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate() + (6 - fromDate.getDay())); // Set week end to Sunday
 
-      const key = `${weekStartDate.toISOString().substring(0, 10)}-${weekEndDate.toISOString().substring(0, 10)}`;
+      // const key = `${weekStartDate.toISOString().substring(0, 10)}-${weekEndDate.toISOString().substring(0, 10)}`;
+      const key = `${weekStartDate.toISOString().substring(0, 10)}-${weekEndDate.toISOString().substring(0, 10)}-${item.user.id}`;
 
       if (uniqueRows.has(key)) {
         // Accumulate hours for the same weekStartDate and weekEndDate

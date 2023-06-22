@@ -36,7 +36,7 @@
               <span class="project-name">Project Name: {{ project }}</span><br>
               <span class="project-hours">Recorded Hours: {{ day.timesheetEntry?.hours }}</span>
               <mat-icon class="delete-icon" (click)="deleteTimesheetRecord(day.timesheetEntry.projects[i].id)"
-                        *ngIf="day.timesheetEntry.projects[i].status === 'Initializat'">delete
+                        *ngIf="day.timesheetEntry.projects[i].status === 'Initializat' || day.timesheetEntry.projects[i].status === 'Init'">delete
               </mat-icon>
             </div>
           </div>

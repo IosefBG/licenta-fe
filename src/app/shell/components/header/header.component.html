@@ -2,26 +2,26 @@
   <nav class="navbar navbar-expand navbar-dark bg-dark">
     <a href="#" class="navbar-brand">gabriel.iosefbinica</a>
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
-      <li class="nav-item">
-        <a href="/home" class="nav-link" routerLink="home">Home </a>
-      </li>
+<!--      <li class="nav-item">-->
+<!--        <a href="/home" class="nav-link" routerLink="home">Acasa </a>-->
+<!--      </li>-->
       <li class="nav-item" *ngIf="showAdminBoard">
-        <a href="/admin" class="nav-link" routerLink="admin">Admin Board</a>
+        <a href="/admin" class="nav-link" routerLink="admin">Panou admin</a>
       </li>
       <li class="nav-item" *ngIf="showManagerBoard">
-        <a href="/manage" class="nav-link" routerLink="manage">Moderator Board</a>
+        <a href="/manage" class="nav-link" routerLink="manage">Panou moderator</a>
       </li>
       <li class="nav-item">
-        <a href="/timesheet" class="nav-link" *ngIf="isLoggedIn" routerLink="timesheet">User</a>
+        <a href="/timesheet" class="nav-link" *ngIf="isLoggedIn" routerLink="timesheet">Acasa</a>
       </li>
     </ul>
 
     <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
       <li class="nav-item">
-        <a href="/register" class="nav-link" routerLink="register">Sign Up</a>
+        <a href="/register" class="nav-link" routerLink="register">Inregistrare</a>
       </li>
       <li class="nav-item">
-        <a href="/login" class="nav-link" routerLink="login">Login</a>
+        <a href="/login" class="nav-link" routerLink="login">Conectare</a>
       </li>
     </ul>
 
@@ -30,7 +30,7 @@
         <a href="/profile" class="nav-link" routerLink="profile">{{ username }}</a>
       </li>
       <li class="nav-item">
-        <a href class="nav-link" (click)="logout()">LogOut</a>
+        <a href class="nav-link" (click)="logout()">Deconectare</a>
       </li>
     </ul>
   </nav>
