@@ -239,7 +239,7 @@ export class BoardUserComponent implements OnInit {
   sendTimesheet(days: any) {
     const startweek = days[0].date.toISOString().split('T')[0]
     const endweek = days[days.length - 1].date.toISOString().split('T')[0]
-    this.apiService.updateTimesheetStatus('In asteptare', startweek, endweek).subscribe(() => {
+    this.apiService.updateUserTimesheetStatus('In asteptare', startweek, endweek).subscribe(() => {
       window.location.reload();
     });
   }

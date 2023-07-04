@@ -2,12 +2,12 @@
   <form [formGroup]="myForm" (ngSubmit)="submitForm()" class="form-container">
     <h2>Atribuie un proiect unui manager</h2>
     <mat-form-field appearance="outline" class="form-field">
-      <input matInput placeholder="Project Name" formControlName="projectName" required>
+      <input matInput placeholder="Nume proiect" formControlName="projectName" required>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Manager Name</mat-label>
-      <mat-select placeholder="Select Manager" formControlName="managerName" required>
+      <mat-label>Nume manager</mat-label>
+      <mat-select placeholder="Select Manager" style="margin-top:-1.25em!important" formControlName="managerName" required>
         <mat-option *ngFor="let manager of managers" [value]="manager.id">
           {{ manager.username }}
         </mat-option>
@@ -17,9 +17,9 @@
     <button class="custom-button" color="primary" type="submit">Submit</button>
   </form>
   <form [formGroup]="userRole" (ngSubmit)="addUserRole()" class="form-container">
-    <h2>Role manager</h2>
+    <h2>Manager permisiuni</h2>
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>User name</mat-label>
+      <mat-label>Nume utilizator</mat-label>
       <mat-select placeholder="Select Manager" formControlName="userId" required
                   (selectionChange)="onUserSelectionChange($event.value)">
         <mat-option *ngFor="let user of usersWithMissingRoles" [value]="user.id">
@@ -29,7 +29,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Role Permission</mat-label>
+      <mat-label>Permisiune rol</mat-label>
       <mat-select placeholder="Select Manager" formControlName="userRoleId" required>
         <mat-option *ngFor="let role of selectedUser?.missingRoles" [value]="role.id">
           {{ role.name }}
@@ -39,9 +39,9 @@
     <button class="custom-button" color="primary" type="submit">Submit</button>
   </form>
   <form [formGroup]="userProjectForm" (ngSubmit)="onUserProjectFormSubmit()" class="form-container">
-    <h2>Assign project to user</h2>
+    <h2>Atribuie un proiect unui utilizator</h2>
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>User</mat-label>
+      <mat-label>Utilizator</mat-label>
       <mat-select formControlName="selectedUser">
         <mat-option *ngFor="let user of usersWithUserRoles" [value]="user">
           {{ user.username }}
@@ -50,7 +50,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Project</mat-label>
+      <mat-label>Proiect</mat-label>
       <mat-select formControlName="selectedProject">
         <mat-option *ngFor="let project of projects" [value]="project">
           {{ project.projectName }}
@@ -63,16 +63,16 @@
 </div>
 <div class="form-row">
   <form [formGroup]="reportForm" (ngSubmit)="downloadReport()" class="form-container">
-    <h2>Download Reports</h2>
+    <h2>Descarca rapoarte</h2>
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>Start Date</mat-label>
+      <mat-label>Data inceput</mat-label>
       <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
       <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #startDatePicker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
-      <mat-label>End Date</mat-label>
+      <mat-label>Data final</mat-label>
       <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
       <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #endDatePicker></mat-datepicker>

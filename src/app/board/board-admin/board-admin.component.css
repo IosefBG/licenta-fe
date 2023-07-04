@@ -30,7 +30,6 @@ td {
   color: #ccc;
 }
 
-
 .form-container {
   display: flex;
   flex-direction: column;
@@ -40,9 +39,8 @@ td {
   border-radius: 5px;
   padding: 20px;
   flex: 1;
-  color:white;
+  color: white;
 }
-
 
 .app-data-table {
   margin-bottom: 40px;
@@ -64,28 +62,32 @@ td {
 }
 
 .mat-form-field-appearance-outline .mat-form-field-flex {
-  background-color: white!important;
+  background-color: white !important;
 }
 
 .custom-button {
-  background-color: #888; /* Set the background color */
-  color: #fff; /* Set the text color */
-  border: none; /* Remove the border */
-  padding: 10px 20px; /* Adjust the padding as needed */
-  border-radius: 4px; /* Add rounded corners */
-  cursor: pointer; /* Change the cursor to a pointer on hover */
-}
-.mat-calendar-body-cell-content, .mat-date-range-input-separator {
-  color: white!important;
-}
-.mat-calendar-body-label{
-  color: white!important;
-}
-.mat-form-field-appearance-outline .mat-form-field-outline .mat-input-element {
-  color: black; /* Set the desired text color */
+  background-color: #888;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
+.mat-calendar-body-cell-content,
+.mat-date-range-input-separator {
+  color: white !important;
+}
+
+.mat-calendar-body-label {
+  color: white !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline .mat-input-element {
+  color: black;
+}
 
 .mat-input-element {
-  color: black!important; /* Set the desired text color */
+  color: black !important;
 }
+

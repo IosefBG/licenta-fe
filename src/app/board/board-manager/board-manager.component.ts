@@ -135,10 +135,11 @@ export class BoardManagerComponent implements OnInit, AfterViewInit {
   }
 
 
-  updateStatus(status: string, startDate: string, endDate: string) {
-    this.apiService.updateTimesheetStatus(status, startDate, endDate).subscribe(() => {
+  updateStatus(userid: number, status: string, startDate: string, endDate: string) {
+    this.apiService.updateTimesheetStatus(userid, status, startDate, endDate).subscribe(() => {
       window.location.reload()
     });
+    window.location.reload()
   }
 }
 

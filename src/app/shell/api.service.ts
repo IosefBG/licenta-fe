@@ -186,8 +186,13 @@ export class ApiService {
     return this.makeRequest('DELETE', `user/deleteTimesheetEntry`, param);
   }
 
-  updateTimesheetStatus(pending: string, startweek: string, endweek: string) {
-    let param = new HttpParams().set('userId', this.storageService.getUser().id).set('status', pending).set('startWeek', startweek).set('endWeek', endweek);
+  updateTimesheetStatus(userid: number,pending: string, startweek: string, endweek: string) {
+    let param = new HttpParams().set('userId', userid).set('status', pending).set('startWeek', startweek).set('endWeek', endweek);
+    return this.makeRequest('POST', `user/updateTimesheetEntry`, param);
+  }
+
+  updateUserTimesheetStatus(status: string, startweek: string, endweek:string):Observable<any>{
+    let param = new HttpParams().set('userId', this.storageService.getUser().getId()).set('status', status).set('startWeek', startweek).set('endWeek', endweek);
     return this.makeRequest('POST', `user/updateTimesheetEntry`, param);
   }
 

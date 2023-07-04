@@ -41,8 +41,8 @@
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let element">
       <ng-container *ngIf="element.status==='In asteptare'; else elseBlock">
-        <button (click)="updateStatus('Acceptat',element.fromDate,element.toDate)"> Accepta</button>
-        <button (click)="updateStatus('Refa',element.fromDate,element.toDate)"> Refuza</button>
+        <button (click)="updateStatus(element.user.id,'Acceptat',element.fromDate,element.toDate)"> Accepta</button>
+        <button (click)="updateStatus(element.user.id,'Refuzat',element.fromDate,element.toDate)"> Refuza</button>
       </ng-container>
       <ng-template #elseBlock>
         {{element.status}}
